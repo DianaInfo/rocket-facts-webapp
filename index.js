@@ -17,13 +17,13 @@ window.addEventListener("deviceorientation", function(event) {
 	var oldPositionLeft = rocketElement.getAttribute("left")
 
 	var rocketImage = document.querySelector("#rocket_image")
-	var image_path = "images/rocket_directions/rocket_fire_top_right"
+	var image_path = "images/rocket_directions/rocket_fire_top_right.png"
 	if(beta > 0 && gamma > 0) {
-		image_path = "images/rocket_directions/rocket_fire_down_right"
+		image_path = "images/rocket_directions/rocket_fire_down_right.png"
 	} else if(beta > 0 && gamma < 0) {
-		image_path = "images/rocket_directions/rocket_fire_down_left"
+		image_path = "images/rocket_directions/rocket_fire_down_left.png"
 	} else if(beta < 0 && gamma < 0) {
-		image_path = "images/rocket_directions/rocket_fire_top_left"
+		image_path = "images/rocket_directions/rocket_fire_top_left.png"
 	}
 
 	rocketImage.setAttribute("src", image_path)
