@@ -22,11 +22,11 @@ window.addEventListener("deviceorientation", function(event) {
 		image_path = "images/rocket_directions/rocket_fire_up_left.png"
 	}
 
-	var rocketElement = document.querySelector("#rocket_div")
-	var oldPositionTop = parseInt(rocketElement.getAttribute("top").split("rem")[0]);
-	var oldPositionLeft = parseInt(rocketElement.getAttribute("left").split("rem")[0]);
-
 	rocketImage.setAttribute("src", image_path)
+
+	var rocketElement = document.getElementById("rocket_div")
+	var oldPositionTop = rocketElement.offsetTop;
+	var oldPositionLeft = rocketElement.offsetLeft;
 
 	document.querySelector("#old_positions").innerHTML = "top = " + oldPositionTop + "<br>" + "left = " + oldPositionLeft;
 

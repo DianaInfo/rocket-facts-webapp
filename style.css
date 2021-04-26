@@ -36,7 +36,7 @@
     #rocket_div {
         border: 1px solid white;
         width: auto;
-        position: absolute;
+        position: fixed;
         top: 15rem;
         left: 1rem;
     }
@@ -75,7 +75,6 @@
 @media (min-width: 60rem) and (max-width: 70rem) {
     
     #rocket_div {
-        position: absolute;
         top: 20rem;
         left: 1rem;
     }
@@ -97,7 +96,6 @@
 @media (min-width: 40rem) and (max-width: 60rem) {
     
     #rocket_div {
-        position: absolute;
         top: 20rem;
         left: 1rem;
     }
@@ -120,7 +118,6 @@
 @media (max-width: 40rem) {
     
     #rocket_div {
-        position: absolute;
         top: 25rem;
         left: 1rem;
     }
