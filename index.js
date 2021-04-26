@@ -34,7 +34,7 @@ window.addEventListener("deviceorientation", function(event) {
 	var newPositionLeft = oldPositionLeft + gamma
 
 	if (newPositionTop != null) {
-		rocketElement.style.top = newPositionTop + "px"
+		window.scrollBy(beta)
 	}
 	if (newPositionLeft != null){
 		rocketElement.style.left = newPositionLeft + "px"
