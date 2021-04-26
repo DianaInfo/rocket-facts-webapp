@@ -1,0 +1,95 @@
+    body {
+        background-color: white;
+    }
+
+    header {
+        height: 35rem;
+    }
+
+    #header_section {
+        background-image: url("images/stars_background.jpg");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 30rem;
+    }
+
+    #rocket_div {
+        border: 1px solid white;
+        width: auto;
+        position: absolute;
+        top: 15rem;
+        left: 1rem;
+    }
+
+    #rocket_image {
+        width: 20rem;
+        height: 20rem;
+    }
+
+    #title {
+        vertical-align: top;
+        text-align: right;
+        font-size: 3rem;
+        font-weight: bold;
+        padding: 10rem 15rem 0 0;
+        color: red;
+    }
+
+@media (min-width: 50rem) and (max-width: 70rem) {
+    
+    #rocket_div {
+        position: absolute;
+        top: 20rem;
+        left: 1rem;
+    }
+
+    #rocket_image {
+        width: 15rem;
+        height: 15rem;
+    }
+
+    #title {
+        font-size: 3rem;
+    }
+
+}
+
+@media (min-width: 40rem) and (max-width: 50rem) {
+    
+    #rocket_div {
+        position: absolute;
+        top: 20rem;
+        left: 1rem;
+    }
+    
+    #rocket_image {
+        width: 15rem;
+        height: 15rem;
+    }
+
+    #title {
+        font-size: 3rem;
+    }
+
+}
+
+@media (max-width: 40rem) {
+    
+    #rocket_div {
+        position: absolute;
+        top: 25rem;
+        left: 1rem;
+    }
+    
+    #rocket_image {
+        width: 10rem;
+        height: 10rem;
+    }
+
+    #title {
+        font-size: 2rem;
+        padding: 10rem 5rem 0 0;
+    }
+
+}
