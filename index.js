@@ -28,6 +28,8 @@ window.addEventListener("deviceorientation", function(event) {
 
 	rocketImage.setAttribute("src", image_path)
 
+	document.querySelector("#old_positions").innerHTML = "top = " + oldPositionTop + "<br>" + "left = " + oldPositionLeft;
+
 	var newPositionTop = oldPositionTop + beta
 	var newPositionLeft = oldPositionLeft + gamma
 
