@@ -12,10 +12,6 @@ window.addEventListener("deviceorientation", function(event) {
 
 	document.querySelector("#mag").innerHTML = "alpha = " + event.alpha + "<br>" + "beta = " + event.beta + "<br>" + "gamma = " + event.gamma;
 
-	var rocketElement = document.querySelector("#rocket_div")
-	var oldPositionTop = rocketElement.getAttribute("top")
-	var oldPositionLeft = rocketElement.getAttribute("left")
-
 	var rocketImage = document.querySelector("#rocket_image")
 	var image_path = "images/rocket_directions/rocket_fire_up_right.png"
 	if(beta > 0 && gamma > 0) {
@@ -26,6 +22,10 @@ window.addEventListener("deviceorientation", function(event) {
 		image_path = "images/rocket_directions/rocket_fire_up_left.png"
 	}
 
+	var rocketElement = document.querySelector("#rocket_div")
+	var oldPositionTop = parseInt(rocketElement.getAttribute("top").split("rem")[0]);
+	var oldPositionLeft = parseInt(rocketElement.getAttribute("left").split("rem")[0]);
+
 	rocketImage.setAttribute("src", image_path)
 
 	document.querySelector("#old_positions").innerHTML = "top = " + oldPositionTop + "<br>" + "left = " + oldPositionLeft;
@@ -33,6 +33,10 @@ window.addEventListener("deviceorientation", function(event) {
 	var newPositionTop = oldPositionTop + beta
 	var newPositionLeft = oldPositionLeft + gamma
 
-	rocketElement.setAttribute("top", newPositionTop)
-	rocketElement.setAttribute("left", newPositionLeft)
+	if (newPositionTop != null) {
+		rocketElement.setAttribute("top", newPositionTop + "rem")
+	}
+	if (newPositionLeft != null){
+		rocketElement.setAttribute("left", newPositionLeft + "rem")
+	}
 }, true);
