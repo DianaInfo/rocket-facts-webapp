@@ -34,9 +34,9 @@ window.addEventListener("deviceorientation", function(event) {
 	var newPositionLeft = oldPositionLeft + gamma
 
 	if (newPositionTop != null) {
-		rocketElement.setAttribute("top", newPositionTop + "rem")
+		rocketElement.style.top = newPositionTop + "px"
 	}
 	if (newPositionLeft != null){
-		rocketElement.setAttribute("left", newPositionLeft + "rem")
+		rocketElement.style.left = newPositionLeft + "px"
 	}
 }, true);
