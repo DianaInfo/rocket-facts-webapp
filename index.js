@@ -19,7 +19,8 @@ window.addEventListener("load", function() {
 }, false)
 
 var startPositionChecked = false
-var tiltDifferential = 5
+var minTiltDifferenceX = 1
+var minTiltDifferenceY = 5
 var tiltBackStart = -5
 var tiltForwardStart = 5
 var startAngle = 0
@@ -28,21 +29,44 @@ var scrollIncrement = startScrollIncrement
 var inertia = 5
 var scrollPosition = window.pageYOffset
 
+var up = true
+var right = true
+
 window.addEventListener("deviceorientation", function(event) {
 	var beta = event.beta
 	var gamma = event.gamma
 
+	if (!startPositionChecked) {
+		startAngle = beta
+		tiltBackStart = startAngle - minTiltDifferenceY
+		tiltForwardStart = startAngle + minTiltDifferenceY
+
+		startPositionChecked = true
+	}
+
 	var rocketImage = document.querySelector("#rocket_image")
 	var oldImagePath = rocketImage.getAttribute("src")
 	var newImagePath = ""
-	if(beta < -tiltDifferential && gamma > tiltDifferential) {
-		newImagePath = "images/rocket_directions/rocket_fire_up_right.png"
-	} else if(beta > tiltDifferential && gamma > tiltDifferential) {
-		newImagePath = "images/rocket_directions/rocket_fire_down_right.png"
-	} else if(beta > tiltDifferential && gamma < -tiltDifferential) {
-		newImagePath = "images/rocket_directions/rocket_fire_down_left.png"
-	} else if(beta < -tiltDifferential && gamma < -tiltDifferential) {
-		newImagePath = "images/rocket_directions/rocket_fire_up_left.png"
+
+	if (beta < tiltBackStart || beta > tiltForwardStart) {
+		up = beta < tiltBackStart
+	}
+	if (gamma < -minTiltDifferenceX || gamma > minTiltDifferenceX) {
+		right = gamma > minTiltDifferenceX
+	}
+
+	if(up) {
+		if (right) {
+			newImagePath = "images/rocket_directions/rocket_fire_up_right.png"
+		} else {
+			newImagePath = "images/rocket_directions/rocket_fire_up_left.png"
+		}
+	} else {
+		if (right) {
+			newImagePath = "images/rocket_directions/rocket_fire_down_right.png"
+		} else {
+			newImagePath = "images/rocket_directions/rocket_fire_down_left.png"
+		}
 	}
 
 	if (oldImagePath != newImagePath && newImagePath != "") {
@@ -54,7 +78,7 @@ window.addEventListener("deviceorientation", function(event) {
 	var rocketBounding = rocketElement.getBoundingClientRect()
 
 	// Frage: wird es stockend die Bewegung, wenn ja zurück ändern
-	if (gamma > tiltDifferential || gamma < tiltDifferential) {
+	if (gamma > minTiltDifferenceX || gamma < -minTiltDifferenceX) {
 		var oldPositionLeft = rocketElement.offsetLeft
 		var maxPositionLeft = window.innerWidth - rocketBounding.width
 		var newPositionLeft = oldPositionLeft + gamma
@@ -68,14 +92,6 @@ window.addEventListener("deviceorientation", function(event) {
 	}
 
 
-	if (!startPositionChecked) {
-		startAngle = beta
-		tiltBackStart = startAngle - tiltDifferential
-		tiltForwardStart = startAngle - tiltDifferential
-
-		startPositionChecked = true
-	}
-
 	if (beta > tiltForwardStart) {
 		scrollPosition = Math.max(0, scrollPosition - scrollIncrement)
 	} else if (beta < tiltBackStart) {
@@ -88,6 +104,7 @@ window.addEventListener("deviceorientation", function(event) {
 	document.querySelector("#mag").innerHTML = "alpha = " + event.alpha
 		+ "<br>" + "beta = " + event.beta + "<br>" + "gamma = " + event.gamma
 		+ "<br>" + "scrollPosition = " + scrollPosition
+
 
 	var buttons = Array.from(document.getElementsByClassName("fact"))
 	buttons.sort(function(a,b) {
