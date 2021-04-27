@@ -14,6 +14,8 @@ var facts = [
 	"Rockets launch in 3 stages."
 ]
 
+var lastMovedTimeInMilliSec = new Date().getTime()
+
 window.onload = function() {
 	window.scrollTo(0,0)
 }
@@ -61,10 +63,10 @@ window.addEventListener("deviceorientation", function(event) {
 	else if (newPositionLeft > maxPositionLeft) newPositionLeft = maxPositionLeft
 
 	if (newPositionTop != null) {
-		var scrollByY = 0
-		if (beta > 50) scrollByY = 100
-		else if(beta > 30) scrollByY = 50
-		else if(beta > 10) scrollByY = 20
+		var scrollByY = beta
+		if (Math.abs(beta) > 50) scrollByY = Math.sign(beta) * 100
+		else if(Math.abs(beta) > 30) scrollByY = Math.sign(beta) * 50
+		else if(Math.abs(beta) > 10) scrollByY = Math.sign(beta) * 20
 		window.scrollBy(0, scrollByY)
 	}
 	if (newPositionLeft != null){
@@ -76,25 +78,29 @@ window.addEventListener("deviceorientation", function(event) {
 		return parseInt(a.innerHTML) - parseInt(b.innerHTML)
 	})
 
-	for (let i = 0; i < buttons.length; i++) {
-		var popup = document.getElementById("fact_popup");
+	var timeInMilliSec = new Date().getTime()
+	if (timeInMilliSec - lastMovedTimeInMilliSec > 1000) {
+		lastMovedTimeInMilliSec = timeInMilliSec
+		for (let i = 0; i < buttons.length; i++) {
+			var popup = document.getElementById("fact_popup");
 
-		const buttonBounding = buttons[i].getBoundingClientRect()
-		var rocketCenterX = rocketBounding.x + 1/2 * rocketBounding.width
-		var rocketCenterY = rocketBounding.y + 1/2 * rocketBounding.height
+			const buttonBounding = buttons[i].getBoundingClientRect()
+			var rocketCenterX = rocketBounding.x + 1/2 * rocketBounding.width
+			var rocketCenterY = rocketBounding.y + 1/2 * rocketBounding.height
 
-		buttonBoundingXOnWindow = buttonBounding.y - window.scrollY;
-		if (buttonBounding.x < rocketCenterX < (buttonBounding.x + buttonBounding.width)) {
-			if (buttonBoundingXOnWindow < rocketCenterY < (buttonBoundingXOnWindow + buttonBounding.height)) {
-				var text = document.getElementById("fact_text")
-				text.innerHTML = facts[i]
-				popup.classList.add("show")
-				break;
+			buttonBoundingXOnWindow = buttonBounding.y - window.scrollY;
+			if (buttonBounding.x < rocketCenterX < (buttonBounding.x + buttonBounding.width)) {
+				if (buttonBoundingXOnWindow < rocketCenterY < (buttonBoundingXOnWindow + buttonBounding.height)) {
+					var text = document.getElementById("fact_text")
+					text.innerHTML = facts[i]
+					popup.classList.add("show")
+					break;
+				} else {
+					popup.classList.remove("show")
+				}
 			} else {
 				popup.classList.remove("show")
 			}
-		} else {
-			popup.classList.remove("show")
-		}
-	};
+		};
+	}
 }, true);
