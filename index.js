@@ -98,6 +98,27 @@ updateImage = function() {
 	}
 }
 
+updateRocketPositionY = function(beta) {
+	var rocketElement = document.getElementById("rocket_div")
+	var rocketBounding = rocketElement.getBoundingClientRect()
+
+	var oldPositionTop = rocketElement.offsetTop
+	var maxPositionTop = window.innerHeight - rocketBounding.height
+
+	if (Math.abs(beta) > minTiltDifferenceY) {
+		var newPositionTop = oldPositionTop + parseInt(beta)
+
+		if (newPositionTop < 0) newPositionTop = 0
+		else if (newPositionTop > maxPositionTop) newPositionTop = maxPositionTop
+
+		if (newPositionTop != null){
+			rocketElement.style.top = newPositionTop + "px"
+		}
+	}
+
+	document.querySelector("#mag").innerHTML += "<br>" + "newPositionTop = " + newPositionTop
+}
+
 updateRocketPositionX = function(gamma) {
 	var rocketElement = document.getElementById("rocket_div")
 	var rocketBounding = rocketElement.getBoundingClientRect()
@@ -107,7 +128,7 @@ updateRocketPositionX = function(gamma) {
 
 	// Frage: wird es stockend die Bewegung, wenn ja zurück ändern
 	if (Math.abs(gamma) > minTiltDifferenceX) {
-		var newPositionLeft = oldPositionLeft + gamma
+		var newPositionLeft = oldPositionLeft + parseInt(gamma)
 
 		if (newPositionLeft < 0) newPositionLeft = 0
 		else if (newPositionLeft > maxPositionLeft) newPositionLeft = maxPositionLeft
@@ -116,25 +137,8 @@ updateRocketPositionX = function(gamma) {
 			rocketElement.style.left = newPositionLeft + "px"
 		}
 	}
-}
 
-updateRocketPositionY = function(beta) {
-	var rocketElement = document.getElementById("rocket_div")
-	var rocketBounding = rocketElement.getBoundingClientRect()
-
-	var oldPositionTop = rocketElement.offsetTop
-	var maxPositionTop = window.innerHeight - rocketBounding.height
-
-	if (Math.abs(beta) > minTiltDifferenceY) {
-		var newPositionTop = oldPositionTop + gamma
-
-		if (newPositionTop < 0) newPositionTop = 0
-		else if (newPositionTop > maxPositionTop) newPositionTop = maxPositionTop
-
-		if (newPositionTop != null){
-			rocketElement.style.top = newPositionTop + "px"
-		}
-	}
+	document.querySelector("#mag").innerHTML += "<br>" + "newPositionLeft = " + newPositionLeft
 }
 
 setFactPopup = function() {
