@@ -58,10 +58,10 @@ window.addEventListener("deviceorientation", function(event) {
 		startPositionChecked = true
 	}
 
-	if (beta < tiltBackStart || beta > tiltForwardStart) {
+	if (Math.abs(beta) > minTiltDifferenceY) {
 		up = beta < tiltBackStart
 	}
-	if (gamma < -minTiltDifferenceX || gamma > minTiltDifferenceX) {
+	if (Math.abs(gamma) > minTiltDifferenceX) {
 		right = gamma > minTiltDifferenceX
 	}
 
@@ -106,7 +106,7 @@ updateRocketPositionX = function(gamma) {
 	var maxPositionLeft = window.innerWidth - rocketBounding.width
 
 	// Frage: wird es stockend die Bewegung, wenn ja zurück ändern
-	if (gamma < -minTiltDifferenceX || gamma > minTiltDifferenceX) {
+	if (Math.abs(gamma) > minTiltDifferenceX) {
 		var newPositionLeft = oldPositionLeft + gamma
 
 		if (newPositionLeft < 0) newPositionLeft = 0
@@ -119,15 +119,14 @@ updateRocketPositionX = function(gamma) {
 }
 
 updateRocketPositionY = function(beta) {
-	if (beta > tiltForwardStart) {
-		scrollPosition = Math.min(document.body.clientHeight, scrollPosition + beta)
-	} else if (beta < tiltBackStart) {
-		scrollPosition = Math.max(0, scrollPosition + beta)
-	}
+	var scrollIncrement = parseInt(beta)
+	if (Math.abs(beta) > 50) scrollIncrement = Math.sign(beta) * 100
+	else if(Math.abs(beta) > 30) scrollIncrement = Math.sign(beta) * 50
+	else if(Math.abs(beta) > 10) scrollIncrement = Math.sign(beta) * 20
 
-	window.scrollTo(0, scrollPosition)
+	window.scrollBy(0, scrollIncrement)
 
-	document.querySelector("#mag").innerHTML += "<br>" + "scrollPosition = " + scrollPosition
+	document.querySelector("#mag").innerHTML += "<br>" + "scrollIncrement = " + scrollIncrement
 }
 
 setFactPopup = function() {
