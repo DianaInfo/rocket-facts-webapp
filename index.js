@@ -19,7 +19,7 @@ window.addEventListener("load", function() {
 }, false)
 
 var startPositionChecked = false
-var minTiltDifferenceX = 1
+var minTiltDifferenceX = 2
 var minTiltDifferenceY = 5
 var tiltBackStart = -5
 var tiltForwardStart = 5
@@ -119,14 +119,22 @@ updateRocketPositionX = function(gamma) {
 }
 
 updateRocketPositionY = function(beta) {
-	var scrollIncrement = parseInt(beta)
-	if (Math.abs(beta) > 50) scrollIncrement = Math.sign(beta) * 100
-	else if(Math.abs(beta) > 30) scrollIncrement = Math.sign(beta) * 50
-	else if(Math.abs(beta) > 10) scrollIncrement = Math.sign(beta) * 20
+	var rocketElement = document.getElementById("rocket_div")
+	var rocketBounding = rocketElement.getBoundingClientRect()
 
-	window.scrollBy(0, scrollIncrement)
+	var oldPositionTop = rocketElement.offsetTop
+	var maxPositionTop = window.innerHeight - rocketBounding.height
 
-	document.querySelector("#mag").innerHTML += "<br>" + "scrollIncrement = " + scrollIncrement
+	if (Math.abs(beta) > minTiltDifferenceY) {
+		var newPositionTop = oldPositionTop + gamma
+
+		if (newPositionTop < 0) newPositionTop = 0
+		else if (newPositionTop > maxPositionTop) newPositionTop = maxPositionTop
+
+		if (newPositionTop != null){
+			rocketElement.style.top = newPositionTop + "px"
+		}
+	}
 }
 
 setFactPopup = function() {
