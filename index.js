@@ -24,8 +24,7 @@ var minTiltDifferenceY = 5
 var tiltBackStart = -5
 var tiltForwardStart = 5
 var startAngle = 0
-var startScrollIncrement = 5
-var scrollIncrement = startScrollIncrement
+var scrollIncrement = 1
 var inertia = 5
 var scrollPosition = window.pageYOffset
 
@@ -46,6 +45,11 @@ window.addEventListener("deviceorientation", function(event) {
 		doCalibrate = false
 	}
 
+	beta = beta - betaStandard
+	gamma = gamma - gammaStandard
+
+	document.querySelector("#mag").innerHTML = "alpha = " + event.alpha
+		+ "<br>" + "beta = " + beta + "<br>" + "gamma = " + gamma
 
 	if (!startPositionChecked) {
 		startAngle = beta
@@ -55,33 +59,32 @@ window.addEventListener("deviceorientation", function(event) {
 		startPositionChecked = true
 	}
 
-	updateImage(beta, gamma)
-
-	var rocketElement = document.getElementById("rocket_div")
-	var rocketBounding = rocketElement.getBoundingClientRect()
-
-	updateRocketPositionX(gamma)
-	updateRocketPositionY(beta)
-
-	document.querySelector("#mag").innerHTML = "alpha = " + event.alpha
-		+ "<br>" + "beta = " + event.beta + "<br>" + "gamma = " + event.gamma
-		+ "<br>" + "scrollPosition = " + scrollPosition
-
-	setFactPopup(rocketBounding)
-
-}, true);
-
-updateImage = function(beta, gamma) {
-	var rocketImage = document.querySelector("#rocket_image")
-	var oldImagePath = rocketImage.getAttribute("src")
-	var newImagePath = ""
-
 	if (beta < tiltBackStart || beta > tiltForwardStart) {
 		up = beta < tiltBackStart
 	}
 	if (gamma < -minTiltDifferenceX || gamma > minTiltDifferenceX) {
 		right = gamma > minTiltDifferenceX
 	}
+
+	updateImage()
+
+	var rocketElement = document.getElementById("rocket_div")
+	var rocketBounding = rocketElement.getBoundingClientRect()
+
+	var oldPositionLeft = rocketElement.offsetLeft
+	var maxPositionLeft = window.innerWidth - rocketBounding.width
+
+	updateRocketPositionX(gamma, oldPositionLeft, maxPositionLeft)
+	updateRocketPositionY(beta)
+
+	setFactPopup(rocketBounding)
+
+}, true);
+
+updateImage = function() {
+	var rocketImage = document.querySelector("#rocket_image")
+	var oldImagePath = rocketImage.getAttribute("src")
+	var newImagePath = ""
 
 	if(up) {
 		if (right) {
@@ -102,11 +105,9 @@ updateImage = function(beta, gamma) {
 	}
 }
 
-updateRocketPositionX = function(gamma) {
+updateRocketPositionX = function(gamma, oldPositionLeft, maxPositionLeft) {
 	// Frage: wird es stockend die Bewegung, wenn ja zurück ändern
 	if (gamma < -minTiltDifferenceX || gamma > minTiltDifferenceX) {
-		var oldPositionLeft = rocketElement.offsetLeft
-		var maxPositionLeft = window.innerWidth - rocketBounding.width
 		var newPositionLeft = oldPositionLeft + gamma
 
 		if (newPositionLeft < 0) newPositionLeft = 0
@@ -116,6 +117,18 @@ updateRocketPositionX = function(gamma) {
 			rocketElement.style.left = newPositionLeft + "px"
 		}
 	}
+}
+
+updateRocketPositionY = function(beta) {
+	if (beta > tiltForwardStart) {
+		scrollPosition = Math.min(document.body.clientHeight, scrollPosition + scrollIncrement)
+	} else if (beta < tiltBackStart) {
+		scrollPosition = Math.max(0, scrollPosition - scrollIncrement)
+	}
+
+	window.scrollTo(0, scrollPosition)
+
+	document.querySelector("#mag").innerHTML = document.querySelector("#mag").innerHTML + "<br>" + "scrollPosition = " + scrollPosition
 }
 
 setFactPopup = function(rocketBounding) {
@@ -145,18 +158,6 @@ setFactPopup = function(rocketBounding) {
 			popup.classList.remove("show")
 		}
 	};
-}
-
-updateRocketPositionY = function(beta) {
-	if (beta > tiltForwardStart) {
-		scrollPosition = Math.min(document.body.clientHeight, scrollPosition + scrollIncrement)
-	} else if (beta < tiltBackStart) {
-		scrollPosition = Math.max(0, scrollPosition - scrollIncrement)
-	} else {
-		scrollIncrement = startScrollIncrement
-	}
-
-	window.scrollTo(0, scrollPosition)
 }
 
 calibrate = function() {
