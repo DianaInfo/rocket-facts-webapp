@@ -65,10 +65,6 @@ window.addEventListener("deviceorientation", function(event) {
 
 	updateRocketPositionY(beta)
 	updateRocketPositionX(gamma)
-
-	document.querySelector("#info").innerHTML = "alpha = " + event.alpha
-		+ "<br>" + "beta = " + beta + "<br>" + "gamma = " + gamma
-
 }, true);
 
 updateImage = function() {
@@ -103,7 +99,7 @@ updateRocketPositionY = function(beta) {
 	var maxPositionTop = window.innerHeight - rocketBounding.height
 
 	if (Math.abs(beta) > minTiltDifferenceY) {
-		var newPositionTop = oldPositionTop + parseInt(beta)
+		var newPositionTop = oldPositionTop + (parseInt(beta)/2)
 
 		if (newPositionTop < 0) newPositionTop = 0
 		else if (newPositionTop > maxPositionTop) newPositionTop = maxPositionTop
@@ -122,7 +118,7 @@ updateRocketPositionX = function(gamma) {
 	var maxPositionLeft = window.innerWidth - rocketBounding.width
 
 	if (Math.abs(gamma) > minTiltDifferenceX) {
-		var newPositionLeft = oldPositionLeft + parseInt(gamma)
+		var newPositionLeft = oldPositionLeft + (parseInt(gamma)/2)
 
 		if (newPositionLeft < 0) newPositionLeft = 0
 		else if (newPositionLeft > maxPositionLeft) newPositionLeft = maxPositionLeft
@@ -180,8 +176,6 @@ rocketOnButton = function() {
 	})
 
 	var rocketOnFact = -1
-
-	var isRocketOnAFact = false
 	for (let i = 0; i < buttons.length; i++) {
 		const buttonBounding = buttons[i].getBoundingClientRect()
 		var rocketCenterX = rocketBounding.x + 1/2 * rocketBounding.width
