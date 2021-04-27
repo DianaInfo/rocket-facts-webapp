@@ -24,7 +24,14 @@
         border: 1px solid white;
     }
 
-    #mag {
+    #calibrate_button:hover, #calibrate_button:active {
+        background-color: lightgreen;
+        color: black;
+    }
+
+
+
+    #info {
         position: fixed;
         color: orangered;
     }
