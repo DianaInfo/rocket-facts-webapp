@@ -25,7 +25,7 @@ var betaStandard = 0
 var gammaStandard = 0
 
 var scrollOffsetY = 300
-var rocketOffsetY = 100
+var rocketOffsetY = 50
 
 window.addEventListener("load", function() {
 	window.scrollTo(0,0)
@@ -147,7 +147,7 @@ adjustWindowScroll = function(newPositionTop, maxPositionTop) {
 	var canScrollUp = (currentScrollY > 0)
 	var canScrollDown = (currentScrollY < maxScrollY)
 
-	var maxStep = 50
+	var maxStep = 30
 
 	var str_intensity = ""
 	if (isAtTop && canScrollUp && up) {
