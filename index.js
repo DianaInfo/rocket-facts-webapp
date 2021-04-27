@@ -28,7 +28,7 @@ var doCalibrate = true
 var betaStandard = 0
 var gammaStandard = 0
 
-var scrollOffset = 20
+var scrollOffset = 50
 
 window.addEventListener("deviceorientation", function(event) {
 	var beta = event.beta
@@ -131,6 +131,21 @@ adjustWindowScroll = function() {
 	var offsetBottom = document.documentElement.clientHeight - scrollOffset
 
 	var nextScrollY = currentScrollY
+
+	var isAtTop = (newPositionTop < scrollOffset)
+	var isAtBottom = (newPositionTop > edgeBottom)
+	var canScrollUp = (currentScrollY > 0)
+	var canScrollDown = (currentScrollY < offsetBottom)
+
+	var maxStep = 50
+
+	if (isAtTop && canScrollUp) {
+		var intensity = (scrollOffset - newPositionTop) / scrollOffset
+		nextScrollY = nextScrollY - (maxStep * intensity)
+	} else if (isAtBottom && canScrollDown) {
+		var intensity = (newPositionTop - offsetBottom) / scrollOffset
+		nextScrollY = nextScrollY + (maxStep * intensity)
+	}
 
 	nextScrollY = Math.max(0, Math.min(maxScrollY, nextScrollY))
 
