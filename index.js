@@ -98,7 +98,7 @@ updateRocketPositionY = function(beta) {
 	var rocketBounding = rocketElement.getBoundingClientRect()
 
 	var oldPositionTop = rocketElement.offsetTop
-	var maxPositionTop = window.innerHeight - rocketBounding.height
+	var maxPositionTop = document.documentElement.clientHeight - rocketBounding.height
 
 	if (Math.abs(beta) > minTiltDifferenceY) {
 		var diffY = parseInt(beta) / 2
@@ -127,14 +127,14 @@ adjustWindowScroll = function(newPositionTop, maxPositionTop) {
 	var maxScrollY = documentHeight - document.documentElement.clientHeight
 
 	var currentScrollY = window.pageYOffset
-	var offsetBottom = document.documentElement.clientHeight - scrollOffset
+	var offsetBottom = maxPositionTop - scrollOffset
 
 	var nextScrollY = currentScrollY
 
 	var isAtTop = (newPositionTop < scrollOffset)
-	var isAtBottom = (newPositionTop > maxPositionTop)
+	var isAtBottom = (newPositionTop > offsetBottom)
 	var canScrollUp = (currentScrollY > 0)
-	var canScrollDown = (currentScrollY < offsetBottom)
+	var canScrollDown = (currentScrollY < maxScrollY)
 
 	var maxStep = 50
 
@@ -142,13 +142,13 @@ adjustWindowScroll = function(newPositionTop, maxPositionTop) {
 	if (isAtTop && canScrollUp) {
 		var intensity = (scrollOffset - newPositionTop) / scrollOffset
 		str_intensity = "intensity = " + intensity
-		document.getElementById("info").innerHTML = "intensity = " + intensity
+		nextScrollY = nextScrollY - (maxStep * intensity)
 	} else if (isAtBottom && canScrollDown) {
 		var intensity = (newPositionTop - offsetBottom) / scrollOffset
 		str_intensity = "intensity = " + intensity
 		nextScrollY = nextScrollY + (maxStep * intensity)
 	}
-	document.getElementById("info").innerHTML = "nextScrollY = " + nextScrollY + "<br>" + "intensity = " + str_intensity
+	document.getElementById("info").innerHTML = "nextScrollY = " + nextScrollY + "<br>" + str_intensity
 		+ "<br>" + "newPositionTop = " + newPositionTop + "<br>" + "offsetBottom = " + offsetBottom
 		+ "<br>" + "maxPositionTop = " + maxPositionTop + "<br>" + "currentScrollY = " + currentScrollY
 		+ "<br>" + "maxScrollY = " + maxScrollY
