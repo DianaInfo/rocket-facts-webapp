@@ -92,7 +92,7 @@ window.addEventListener("deviceorientation", function(event) {
 	}
 
 	if (beta > tiltForwardStart) {
-		scrollPosition = Math.min(document.height, scrollPosition + scrollIncrement)
+		scrollPosition = Math.min(document.body.clientHeight, scrollPosition + scrollIncrement)
 	} else if (beta < tiltBackStart) {
 		scrollPosition = Math.max(0, scrollPosition - scrollIncrement)
 	} else {
