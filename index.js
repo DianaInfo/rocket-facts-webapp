@@ -100,7 +100,7 @@ updateRocketPositionY = function(beta) {
 	var oldPositionTop = rocketElement.offsetTop
 	var maxPositionTop = window.innerHeight - rocketBounding.height
 
-	adjustWindowScroll(newPositionTop)
+	adjustWindowScroll(newPositionTop, maxPositionTop)
 
 	if (Math.abs(beta) > minTiltDifferenceY) {
 		var diffY = parseInt(beta) / 2
@@ -115,7 +115,7 @@ updateRocketPositionY = function(beta) {
 	}
 }
 
-adjustWindowScroll = function(newPositionTop) {
+adjustWindowScroll = function(newPositionTop, maxPositionTop) {
 	var documentHeight = Math.max(
 		document.body.offsetHeight,
 		document.body.scrollHeight,
