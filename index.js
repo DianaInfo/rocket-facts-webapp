@@ -133,7 +133,7 @@ adjustWindowScroll = function(newPositionTop) {
 	var nextScrollY = currentScrollY
 
 	var isAtTop = (newPositionTop < scrollOffset)
-	var isAtBottom = (newPositionTop > offsetBottom)
+	var isAtBottom = (newPositionTop > maxPositionTop)
 	var canScrollUp = (currentScrollY > 0)
 	var canScrollDown = (currentScrollY < offsetBottom)
 
@@ -150,6 +150,9 @@ adjustWindowScroll = function(newPositionTop) {
 		nextScrollY = nextScrollY + (maxStep * intensity)
 	}
 	document.getElementById("info").innerHTML = "nextScrollY = " + nextScrollY + "<br>" + "intensity = " + str_intensity
+		+ "<br>" + "newPositionTop = " + newPositionTop + "<br>" + "offsetBottom = " + offsetBottom
+		+ "<br>" + "maxPositionTop = " + maxPositionTop + "<br>" + "currentScrollY = " + currentScrollY
+		+ "<br>" + "maxScrollY = " + maxScrollY
 
 	nextScrollY = Math.max(0, Math.min(maxScrollY, nextScrollY))
 
