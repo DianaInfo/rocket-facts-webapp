@@ -19,10 +19,10 @@ window.addEventListener("load", function() {
 }, false)
 
 var startPositionChecked = false
-var tiltDifferential = 15
-var tiltBackStart = 35
-var tiltForwardStart = 55
-var startAngle = 45
+var tiltDifferential = 5
+var tiltBackStart = -5
+var tiltForwardStart = 5
+var startAngle = 0
 var startScrollIncrement = 5
 var scrollIncrement = startScrollIncrement
 var inertia = 5
@@ -36,15 +36,21 @@ window.addEventListener("deviceorientation", function(event) {
 
 
 	var rocketImage = document.querySelector("#rocket_image")
-	var image_path = "images/rocket_directions/rocket_fire_up_right.png"
-	if(beta > 0 && gamma > 0) {
-		image_path = "images/rocket_directions/rocket_fire_down_right.png"
-	} else if(beta > 0 && gamma < 0) {
-		image_path = "images/rocket_directions/rocket_fire_down_left.png"
-	} else if(beta < 0 && gamma < 0) {
-		image_path = "images/rocket_directions/rocket_fire_up_left.png"
+	var oldImagePath = rocketImage.getAttribute("src")
+	var newImagePath = ""
+	if(beta < -tiltDifferential && gamma > tiltDifferential) {
+		newImagePath = "images/rocket_directions/rocket_fire_up_right.png"
+	} else if(beta > tiltDifferential && gamma > tiltDifferential) {
+		newImagePath = "images/rocket_directions/rocket_fire_down_right.png"
+	} else if(beta > tiltDifferential && gamma < -tiltDifferential) {
+		newImagePath = "images/rocket_directions/rocket_fire_down_left.png"
+	} else if(beta < -tiltDifferential && gamma < -tiltDifferential) {
+		newImagePath = "images/rocket_directions/rocket_fire_up_left.png"
 	}
-	rocketImage.setAttribute("src", image_path)
+
+	if (oldImagePath != newImagePath && newImagePath != "") {
+		rocketImage.setAttribute("src", newImagePath)
+	}
 
 
 	var rocketElement = document.getElementById("rocket_div")
@@ -92,8 +98,8 @@ window.addEventListener("deviceorientation", function(event) {
 		var rocketCenterY = rocketBounding.y + 1/2 * rocketBounding.height
 
 		buttonBoundingXOnWindow = buttonBounding.y - window.scrollY;
-		if (buttonBounding.x < rocketCenterX < (buttonBounding.x + buttonBounding.width)) {
-			if (buttonBoundingXOnWindow < rocketCenterY < (buttonBoundingXOnWindow + buttonBounding.height)) {
+		if (buttonBounding.x < rocketCenterX && rocketCenterX < (buttonBounding.x + buttonBounding.width)) {
+			if (buttonBoundingXOnWindow < rocketCenterY && rocketCenterY < (buttonBoundingXOnWindow + buttonBounding.height)) {
 				var text = document.getElementById("fact_text")
 				text.innerHTML = facts[i]
 				if (!popup.classList.contains("show")) popup.classList.add("show")

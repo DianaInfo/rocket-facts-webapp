@@ -67,7 +67,7 @@
         height: 10rem;
         border-radius: 2rem;
         margin: 1rem;
-        border: 3px solid lightskyblue;
+        border: 3px solid navy;
         background-color: lightblue;
         color:navy;
         font-family: fantasy;
@@ -84,6 +84,7 @@
         position: fixed;
         visibility: hidden;
         width: 100%;
+        color: green;
     }
 
     .popuptext {
