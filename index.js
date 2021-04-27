@@ -100,14 +100,14 @@ updateRocketPositionY = function(beta) {
 	var oldPositionTop = rocketElement.offsetTop
 	var maxPositionTop = window.innerHeight - rocketBounding.height
 
+	adjustWindowScroll(newPositionTop)
+
 	if (Math.abs(beta) > minTiltDifferenceY) {
 		var diffY = parseInt(beta) / 2
 		var newPositionTop = oldPositionTop + diffY
 
 		if (newPositionTop < 0) newPositionTop = 0
 		else if (newPositionTop > maxPositionTop) newPositionTop = maxPositionTop
-
-		adjustWindowScroll(newPositionTop)
 
 		if (newPositionTop != null){
 			rocketElement.style.top = newPositionTop + "px"
@@ -125,7 +125,7 @@ adjustWindowScroll = function(newPositionTop) {
 		document.documentElement.clientHeight,
 	);
 
-	var maxScrollY = (documentHeight - document.documentElement.clientHeight)
+	var maxScrollY = documentHeight - document.documentElement.clientHeight
 
 	var currentScrollY = window.pageYOffset
 	var offsetBottom = document.documentElement.clientHeight - scrollOffset
@@ -133,19 +133,23 @@ adjustWindowScroll = function(newPositionTop) {
 	var nextScrollY = currentScrollY
 
 	var isAtTop = (newPositionTop < scrollOffset)
-	var isAtBottom = (newPositionTop > edgeBottom)
+	var isAtBottom = (newPositionTop > offsetBottom)
 	var canScrollUp = (currentScrollY > 0)
 	var canScrollDown = (currentScrollY < offsetBottom)
 
 	var maxStep = 50
 
+	var str_intensity = ""
 	if (isAtTop && canScrollUp) {
 		var intensity = (scrollOffset - newPositionTop) / scrollOffset
-		nextScrollY = nextScrollY - (maxStep * intensity)
+		str_intensity = "intensity = " + intensity
+		document.getElementById("info").innerHTML = "intensity = " + intensity
 	} else if (isAtBottom && canScrollDown) {
 		var intensity = (newPositionTop - offsetBottom) / scrollOffset
+		str_intensity = "intensity = " + intensity
 		nextScrollY = nextScrollY + (maxStep * intensity)
 	}
+	document.getElementById("info").innerHTML = "nextScrollY = " + nextScrollY + "<br>" + "intensity = " + str_intensity
 
 	nextScrollY = Math.max(0, Math.min(maxScrollY, nextScrollY))
 

@@ -22,12 +22,16 @@
         color: white;
         background-color: green;
         border: 1px solid white;
-        z-index: 10;
     }
 
     #calibrate_button:hover {
         background-color: lightgreen;
         color: black;
+    }
+
+    #info {
+        position: fixed;
+        color: orangered;
     }
 
     #title {
