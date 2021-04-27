@@ -165,7 +165,7 @@ adjustWindowScroll = function(newPositionTop, maxPositionTop) {
 
 	nextScrollY = Math.max(0, Math.min(maxScrollY, nextScrollY))
 
-	if (nextScrollY != currentScrollY) window.scrollTo(0, nextScrollY)
+	window.scrollTo(0, nextScrollY)
 }
 
 updateRocketPositionX = function(gamma) {
