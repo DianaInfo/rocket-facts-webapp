@@ -14,25 +14,26 @@ var facts = [
 	"Rockets launch in 3 stages."
 ]
 
-var lastMovedTimeInMilliSec = new Date().getTime()
-
-window.onload = function() {
+window.addEventListener("load", function() {
 	window.scrollTo(0,0)
-}
+}, false)
 
-window.ondevicemotion = function(event) {
-	var ax = event.accelerationIncludingGravity.x
-	var ay = event.accelerationIncludingGravity.y
-	var az = event.accelerationIncludingGravity.z
-
-	document.querySelector("#acc").innerHTML = "X = " + ax + "<br>" + "Y = " + ay + "<br>" + "Z = " + az
-}
+var startPositionChecked = false
+var tiltDifferential = 15
+var tiltBackStart = 35
+var tiltForwardStart = 55
+var startAngle = 45
+var startScrollIncrement = 5
+var scrollIncrement = startScrollIncrement
+var inertia = 5
+var scrollPosition = window.pageYOffset
 
 window.addEventListener("deviceorientation", function(event) {
 	var beta = event.beta
 	var gamma = event.gamma
 
 	document.querySelector("#mag").innerHTML = "alpha = " + event.alpha + "<br>" + "beta = " + event.beta + "<br>" + "gamma = " + event.gamma
+
 
 	var rocketImage = document.querySelector("#rocket_image")
 	var image_path = "images/rocket_directions/rocket_fire_up_right.png"
@@ -43,64 +44,65 @@ window.addEventListener("deviceorientation", function(event) {
 	} else if(beta < 0 && gamma < 0) {
 		image_path = "images/rocket_directions/rocket_fire_up_left.png"
 	}
-
 	rocketImage.setAttribute("src", image_path)
 
+
 	var rocketElement = document.getElementById("rocket_div")
-	var oldPositionTop = rocketElement.offsetTop
-	var oldPositionLeft = rocketElement.offsetLeft
-
-	document.querySelector("#old_positions").innerHTML = "top = " + oldPositionTop + "<br>" + "left = " + oldPositionLeft
-
 	var rocketBounding = rocketElement.getBoundingClientRect()
 
-	var newPositionTop = oldPositionTop + beta
-	var newPositionLeft = oldPositionLeft + gamma
-
+	var oldPositionLeft = rocketElement.offsetLeft
 	var maxPositionLeft = window.innerWidth - rocketBounding.width
+	var newPositionLeft = oldPositionLeft + gamma
 
 	if (newPositionLeft < 0) newPositionLeft = 0
 	else if (newPositionLeft > maxPositionLeft) newPositionLeft = maxPositionLeft
 
-	if (newPositionTop != null) {
-		var scrollByY = beta
-		if (Math.abs(beta) > 50) scrollByY = Math.sign(beta) * 100
-		else if(Math.abs(beta) > 30) scrollByY = Math.sign(beta) * 50
-		else if(Math.abs(beta) > 10) scrollByY = Math.sign(beta) * 20
-		window.scrollBy(0, scrollByY)
-	}
 	if (newPositionLeft != null){
 		rocketElement.style.left = newPositionLeft + "px"
 	}
+
+	if (!startPositionChecked) {
+		startAngle = beta
+		tiltBackStart = startAngle - tiltDifferential
+		tiltForwardStart = startAngle - tiltDifferential
+
+		startPositionChecked = true
+	}
+
+	if (beta > tiltForwardStart) {
+		scrollPosition = Math.max(0, scrollPosition - scrollIncrement)
+	} else if (beta < tiltBackStart) {
+		scrollPosition = Math.min(document.height, scrollPosition + scrollIncrement)
+	} else {
+		scrollIncrement = startScrollIncrement
+	}
+	window.scrollTo(0, scrollPosition)
+
 
 	var buttons = Array.from(document.getElementsByClassName("fact"))
 	buttons.sort(function(a,b) {
 		return parseInt(a.innerHTML) - parseInt(b.innerHTML)
 	})
 
-	var timeInMilliSec = new Date().getTime()
-	if (timeInMilliSec - lastMovedTimeInMilliSec > 1000) {
-		lastMovedTimeInMilliSec = timeInMilliSec
-		for (let i = 0; i < buttons.length; i++) {
-			var popup = document.getElementById("fact_popup");
+	for (let i = 0; i < buttons.length; i++) {
+		var popup = document.getElementById("fact_popup");
 
-			const buttonBounding = buttons[i].getBoundingClientRect()
-			var rocketCenterX = rocketBounding.x + 1/2 * rocketBounding.width
-			var rocketCenterY = rocketBounding.y + 1/2 * rocketBounding.height
+		const buttonBounding = buttons[i].getBoundingClientRect()
+		var rocketCenterX = rocketBounding.x + 1/2 * rocketBounding.width
+		var rocketCenterY = rocketBounding.y + 1/2 * rocketBounding.height
 
-			buttonBoundingXOnWindow = buttonBounding.y - window.scrollY;
-			if (buttonBounding.x < rocketCenterX < (buttonBounding.x + buttonBounding.width)) {
-				if (buttonBoundingXOnWindow < rocketCenterY < (buttonBoundingXOnWindow + buttonBounding.height)) {
-					var text = document.getElementById("fact_text")
-					text.innerHTML = facts[i]
-					popup.classList.add("show")
-					break;
-				} else {
-					popup.classList.remove("show")
-				}
+		buttonBoundingXOnWindow = buttonBounding.y - window.scrollY;
+		if (buttonBounding.x < rocketCenterX < (buttonBounding.x + buttonBounding.width)) {
+			if (buttonBoundingXOnWindow < rocketCenterY < (buttonBoundingXOnWindow + buttonBounding.height)) {
+				var text = document.getElementById("fact_text")
+				text.innerHTML = facts[i]
+				if (!popup.classList.contains("show")) popup.classList.add("show")
+				break;
 			} else {
 				popup.classList.remove("show")
 			}
-		};
-	}
+		} else {
+			popup.classList.remove("show")
+		}
+	};
 }, true);

@@ -67,8 +67,16 @@
         height: 10rem;
         border-radius: 2rem;
         margin: 1rem;
-        border: 1px solid lightskyblue;
+        border: 3px solid lightskyblue;
         background-color: lightblue;
+        color:navy;
+        font-family: fantasy;
+        font-size: 1.5rem;
+        text-align: center;
+        width: 90%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .popup {
