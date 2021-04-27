@@ -27,6 +27,8 @@ var gammaStandard = 0
 var scrollOffsetY = 300
 var rocketOffsetY = 50
 
+var timer = null
+
 window.addEventListener("load", function() {
 	window.scrollTo(0,0)
 
@@ -120,7 +122,12 @@ updateRocketPositionY = function(beta) {
 
 		if (newPositionTop != null){
 			rocketElement.style.top = newPositionTop + "px"
-			adjustWindowScroll(newPositionTop, maxPositionTop)
+			(function checkForWindowScroll() {
+				clearTimeout(timer);
+				if (adjustWindowScroll(newPositionTop, maxPositionTop)) {
+					timer = setTimeout(checkForWindowScroll, 30);
+				}
+			})();
 		}
 	}
 }
@@ -147,7 +154,7 @@ adjustWindowScroll = function(newPositionTop, maxPositionTop) {
 	var canScrollUp = (currentScrollY > 0)
 	var canScrollDown = (currentScrollY < maxScrollY)
 
-	var maxStep = 30
+	var maxStep = 50
 
 	var str_intensity = ""
 	if (isAtTop && canScrollUp && up) {
@@ -162,15 +169,12 @@ adjustWindowScroll = function(newPositionTop, maxPositionTop) {
 
 	nextScrollY = Math.max(0, Math.min(maxScrollY, nextScrollY))
 
-	document.getElementById("info").innerHTML = "nextScrollY = " + nextScrollY + "<br>" + str_intensity
-		+ "<br>" + "newPositionTop = " + newPositionTop + "<br>" + "offsetBottom = " + offsetBottom
-		+ "<br>" + "maxPositionTop = " + maxPositionTop + "<br>" + "currentScrollY = " + currentScrollY
-		+ "<br>" + "maxScrollY = " + maxScrollY
-
 	window.scroll({
 		top: nextScrollY,
 		behavior: "smooth"
 	})
+
+	return currentScrollY != nextScrollY
 }
 
 updateRocketPositionX = function(gamma) {
