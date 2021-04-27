@@ -28,6 +28,8 @@ var doCalibrate = true
 var betaStandard = 0
 var gammaStandard = 0
 
+var scrollOffset = 20
+
 window.addEventListener("deviceorientation", function(event) {
 	var beta = event.beta
 	var gamma = event.gamma
@@ -102,16 +104,55 @@ updateRocketPositionY = function(beta) {
 		var diffY = parseInt(beta) / 2
 		var newPositionTop = oldPositionTop + diffY
 
-		if (newPositionTop < 0) newPositionTop = 0
-		else if (newPositionTop > maxPositionTop) {
+		if (newPositionTop < 0) {
+			newPositionTop = 0
+		} else if (newPositionTop > maxPositionTop) {
 			newPositionTop = maxPositionTop
-			window.scrollBy(0, 2 * diffY)
 		}
+
+		adjustWindowScroll(newPositionTop)
 
 		if (newPositionTop != null){
 			rocketElement.style.top = newPositionTop + "px"
 		}
 	}
+}
+
+adjustWindowScroll = function(newPositionTop) {
+	var documentHeight = Math.max(
+		document.body.offsetHeight,
+		document.body.scrollHeight,
+		document.body.clientHeight,
+		document.documentElement.offsetHeight,
+		document.documentElement.scrollHeight,
+		document.documentElement.clientHeight,
+	);
+
+	var maxScrollY = (documentHeight - document.documentElement.clientHeight)
+
+	var currentScrollY = window.pageYOffset
+	var offsetBottom = document.documentElement.clientHeight - scrollOffset
+
+	var isAtTop = (newPositionTop < scrollOffset)
+	var isAtBottom =(newPositionTop > edgeBottom)
+	var canScrollUp = (currentScrollY > 0)
+	var canScrollDown = (currentScrollY < offsetBottom)
+
+	var nextScrollY = currentScrollY
+
+	var maxStep = 50
+
+	if (isAtTop && canScrollUp) {
+		var intensity = (scrollOffset - newPositionTop) / scrollOffset
+		nextScrollY = nextScrollY - (maxStep * intensity)
+	} else if (isAtBottom && canScrollDown) {
+		var intensity = (newPositionTop - offsetBottom) / scrollOffset
+		nextScrollY = nextScrollY - (maxStep * intensity)
+	}
+
+	nextScrollY = Math.max(0, Math.min(maxScrollY, nextScrollY))
+
+	if (nextScrollY != currentScrollY) window.scrollTo(0, nextScrollY)
 }
 
 updateRocketPositionX = function(gamma) {

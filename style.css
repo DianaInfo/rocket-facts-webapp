@@ -22,16 +22,12 @@
         color: white;
         background-color: green;
         border: 1px solid white;
+        z-index: 10;
     }
 
     #calibrate_button:hover {
         background-color: lightgreen;
         color: black;
-    }
-
-    #info {
-        position: fixed;
-        color: orangered;
     }
 
     #title {
@@ -48,11 +44,13 @@
         position: fixed;
         top: 15rem;
         left: 1rem;
+        z-index: 20;
     }
 
     #rocket_image {
         width: 20rem;
         height: 20rem;
+        z-index: 30;
     }
 
     #facts_section {
@@ -93,7 +91,6 @@
         position: fixed;
         visibility: hidden;
         width: 100%;
-        color: green;
     }
 
     .popuptext {
@@ -106,7 +103,7 @@
         border: 1px solid aqua;
         color: black;
         padding: 2rem;
-        z-index: 1;
+        z-index: 10;
     }
 
     .show {
