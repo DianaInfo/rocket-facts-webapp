@@ -115,7 +115,7 @@ updateRocketPositionY = function(beta) {
 	}
 }
 
-adjustWindowScroll = function() {
+adjustWindowScroll = function(newPositionTop) {
 	var documentHeight = Math.max(
 		document.body.offsetHeight,
 		document.body.scrollHeight,
