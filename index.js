@@ -31,10 +31,21 @@ var scrollPosition = window.pageYOffset
 
 var up = true
 var right = true
+var doCalibrate = true
+
+var betaStandard = 0
+var gammaStandard = 0
 
 window.addEventListener("deviceorientation", function(event) {
 	var beta = event.beta
 	var gamma = event.gamma
+
+	if (doCalibrate) {
+		betaStandard = beta
+		gammaStandard = gamma
+		doCalibrate = false
+	}
+
 
 	if (!startPositionChecked) {
 		startAngle = beta
@@ -44,6 +55,23 @@ window.addEventListener("deviceorientation", function(event) {
 		startPositionChecked = true
 	}
 
+	updateImage(beta, gamma)
+
+	var rocketElement = document.getElementById("rocket_div")
+	var rocketBounding = rocketElement.getBoundingClientRect()
+
+	updateRocketPositionX(gamma)
+	updateRocketPositionY(beta)
+
+	document.querySelector("#mag").innerHTML = "alpha = " + event.alpha
+		+ "<br>" + "beta = " + event.beta + "<br>" + "gamma = " + event.gamma
+		+ "<br>" + "scrollPosition = " + scrollPosition
+
+	setFactPopup(rocketBounding)
+
+}, true);
+
+updateImage = function(beta, gamma) {
 	var rocketImage = document.querySelector("#rocket_image")
 	var oldImagePath = rocketImage.getAttribute("src")
 	var newImagePath = ""
@@ -72,13 +100,11 @@ window.addEventListener("deviceorientation", function(event) {
 	if (oldImagePath != newImagePath && newImagePath != "") {
 		rocketImage.setAttribute("src", newImagePath)
 	}
+}
 
-
-	var rocketElement = document.getElementById("rocket_div")
-	var rocketBounding = rocketElement.getBoundingClientRect()
-
+updateRocketPositionX = function(gamma) {
 	// Frage: wird es stockend die Bewegung, wenn ja zurück ändern
-	if (gamma > minTiltDifferenceX || gamma < -minTiltDifferenceX) {
+	if (gamma < -minTiltDifferenceX || gamma > minTiltDifferenceX) {
 		var oldPositionLeft = rocketElement.offsetLeft
 		var maxPositionLeft = window.innerWidth - rocketBounding.width
 		var newPositionLeft = oldPositionLeft + gamma
@@ -90,21 +116,9 @@ window.addEventListener("deviceorientation", function(event) {
 			rocketElement.style.left = newPositionLeft + "px"
 		}
 	}
+}
 
-	if (beta > tiltForwardStart) {
-		scrollPosition = Math.min(document.body.clientHeight, scrollPosition + scrollIncrement)
-	} else if (beta < tiltBackStart) {
-		scrollPosition = Math.max(0, scrollPosition - scrollIncrement)
-	} else {
-		scrollIncrement = startScrollIncrement
-	}
-	window.scrollTo(0, scrollPosition)
-
-	document.querySelector("#mag").innerHTML = "alpha = " + event.alpha
-		+ "<br>" + "beta = " + event.beta + "<br>" + "gamma = " + event.gamma
-		+ "<br>" + "scrollPosition = " + scrollPosition
-
-
+setFactPopup = function(rocketBounding) {
 	var buttons = Array.from(document.getElementsByClassName("fact"))
 	buttons.sort(function(a,b) {
 		return parseInt(a.innerHTML) - parseInt(b.innerHTML)
@@ -131,4 +145,20 @@ window.addEventListener("deviceorientation", function(event) {
 			popup.classList.remove("show")
 		}
 	};
-}, true);
+}
+
+updateRocketPositionY = function(beta) {
+	if (beta > tiltForwardStart) {
+		scrollPosition = Math.min(document.body.clientHeight, scrollPosition + scrollIncrement)
+	} else if (beta < tiltBackStart) {
+		scrollPosition = Math.max(0, scrollPosition - scrollIncrement)
+	} else {
+		scrollIncrement = startScrollIncrement
+	}
+
+	window.scrollTo(0, scrollPosition)
+}
+
+calibrate = function() {
+	doCalibrate = true
+}
