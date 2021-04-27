@@ -24,6 +24,11 @@
         border: 1px solid white;
     }
 
+    #mag {
+        position: fixed;
+        color: orangered;
+    }
+
     #title {
         vertical-align: top;
         text-align: right;

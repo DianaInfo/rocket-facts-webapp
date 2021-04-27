@@ -32,9 +32,6 @@ window.addEventListener("deviceorientation", function(event) {
 	var beta = event.beta
 	var gamma = event.gamma
 
-	document.querySelector("#mag").innerHTML = "alpha = " + event.alpha + "<br>" + "beta = " + event.beta + "<br>" + "gamma = " + event.gamma
-
-
 	var rocketImage = document.querySelector("#rocket_image")
 	var oldImagePath = rocketImage.getAttribute("src")
 	var newImagePath = ""
@@ -56,16 +53,20 @@ window.addEventListener("deviceorientation", function(event) {
 	var rocketElement = document.getElementById("rocket_div")
 	var rocketBounding = rocketElement.getBoundingClientRect()
 
-	var oldPositionLeft = rocketElement.offsetLeft
-	var maxPositionLeft = window.innerWidth - rocketBounding.width
-	var newPositionLeft = oldPositionLeft + gamma
+	// Frage: wird es stockend die Bewegung, wenn ja zurück ändern
+	if (gamma > tiltDifferential || gamma < tiltDifferential) {
+		var oldPositionLeft = rocketElement.offsetLeft
+		var maxPositionLeft = window.innerWidth - rocketBounding.width
+		var newPositionLeft = oldPositionLeft + gamma
 
-	if (newPositionLeft < 0) newPositionLeft = 0
-	else if (newPositionLeft > maxPositionLeft) newPositionLeft = maxPositionLeft
+		if (newPositionLeft < 0) newPositionLeft = 0
+		else if (newPositionLeft > maxPositionLeft) newPositionLeft = maxPositionLeft
 
-	if (newPositionLeft != null){
-		rocketElement.style.left = newPositionLeft + "px"
+		if (newPositionLeft != null){
+			rocketElement.style.left = newPositionLeft + "px"
+		}
 	}
+
 
 	if (!startPositionChecked) {
 		startAngle = beta
@@ -84,6 +85,9 @@ window.addEventListener("deviceorientation", function(event) {
 	}
 	window.scrollTo(0, scrollPosition)
 
+	document.querySelector("#mag").innerHTML = "alpha = " + event.alpha
+		+ "<br>" + "beta = " + event.beta + "<br>" + "gamma = " + event.gamma
+		+ "<br>" + "scrollPosition = " + scrollPosition
 
 	var buttons = Array.from(document.getElementsByClassName("fact"))
 	buttons.sort(function(a,b) {
