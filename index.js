@@ -24,7 +24,6 @@ var minTiltDifferenceY = 5
 var tiltBackStart = -5
 var tiltForwardStart = 5
 var startAngle = 0
-var scrollIncrement = 1
 var inertia = 5
 var scrollPosition = window.pageYOffset
 
@@ -68,16 +67,10 @@ window.addEventListener("deviceorientation", function(event) {
 
 	updateImage()
 
-	var rocketElement = document.getElementById("rocket_div")
-	var rocketBounding = rocketElement.getBoundingClientRect()
-
-	var oldPositionLeft = rocketElement.offsetLeft
-	var maxPositionLeft = window.innerWidth - rocketBounding.width
-
-	updateRocketPositionX(gamma, oldPositionLeft, maxPositionLeft)
 	updateRocketPositionY(beta)
+	updateRocketPositionX(gamma)
 
-	setFactPopup(rocketBounding)
+	setFactPopup()
 
 }, true);
 
@@ -105,7 +98,13 @@ updateImage = function() {
 	}
 }
 
-updateRocketPositionX = function(gamma, oldPositionLeft, maxPositionLeft) {
+updateRocketPositionX = function(gamma) {
+	var rocketElement = document.getElementById("rocket_div")
+	var rocketBounding = rocketElement.getBoundingClientRect()
+
+	var oldPositionLeft = rocketElement.offsetLeft
+	var maxPositionLeft = window.innerWidth - rocketBounding.width
+
 	// Frage: wird es stockend die Bewegung, wenn ja zurück ändern
 	if (gamma < -minTiltDifferenceX || gamma > minTiltDifferenceX) {
 		var newPositionLeft = oldPositionLeft + gamma
@@ -121,17 +120,20 @@ updateRocketPositionX = function(gamma, oldPositionLeft, maxPositionLeft) {
 
 updateRocketPositionY = function(beta) {
 	if (beta > tiltForwardStart) {
-		scrollPosition = Math.min(document.body.clientHeight, scrollPosition + scrollIncrement)
+		scrollPosition = Math.min(document.body.clientHeight, scrollPosition + beta)
 	} else if (beta < tiltBackStart) {
-		scrollPosition = Math.max(0, scrollPosition - scrollIncrement)
+		scrollPosition = Math.max(0, scrollPosition + beta)
 	}
 
 	window.scrollTo(0, scrollPosition)
 
-	document.querySelector("#mag").innerHTML = document.querySelector("#mag").innerHTML + "<br>" + "scrollPosition = " + scrollPosition
+	document.querySelector("#mag").innerHTML += "<br>" + "scrollPosition = " + scrollPosition
 }
 
-setFactPopup = function(rocketBounding) {
+setFactPopup = function() {
+	var rocketElement = document.getElementById("rocket_div")
+	var rocketBounding = rocketElement.getBoundingClientRect()
+
 	var buttons = Array.from(document.getElementsByClassName("fact"))
 	buttons.sort(function(a,b) {
 		return parseInt(a.innerHTML) - parseInt(b.innerHTML)
