@@ -99,10 +99,13 @@ updateRocketPositionY = function(beta) {
 	var maxPositionTop = window.innerHeight - rocketBounding.height
 
 	if (Math.abs(beta) > minTiltDifferenceY) {
-		var newPositionTop = oldPositionTop + (parseInt(beta)/2)
+		var diffY = parseInt(beta) / 2
+		var newPositionTop = oldPositionTop + diffY
 
 		if (newPositionTop < 0) newPositionTop = 0
-		else if (newPositionTop > maxPositionTop) newPositionTop = maxPositionTop
+		else if (newPositionTop > maxPositionTop) {
+			window.scrollBy(0, diffY)
+		}
 
 		if (newPositionTop != null){
 			rocketElement.style.top = newPositionTop + "px"
