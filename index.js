@@ -28,7 +28,7 @@ var doCalibrate = true
 var betaStandard = 0
 var gammaStandard = 0
 
-var scrollOffset = 50
+var scrollOffset = 200
 
 window.addEventListener("deviceorientation", function(event) {
 	var beta = event.beta
