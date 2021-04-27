@@ -1,7 +1,3 @@
-window.addEventListener("load", function() {
-	window.scrollTo(0,0)
-}, false)
-
 // facts from https://facts.net/science/technology/rocket-facts/
 var facts = [
 	"NASA has launched a total of 166 manned rockets to space missions.",
@@ -29,6 +25,20 @@ var betaStandard = 0
 var gammaStandard = 0
 
 var scrollOffset = 200
+
+window.addEventListener("load", function() {
+	window.scrollTo(0,0)
+
+	var edge = document.createElement( "span" );
+		edge.style.position = "fixed";
+		edge.style.top = ( scrollOffset + "px" );
+		edge.style.bottom = ( scrollOffset + "px" );
+		edge.style.left = ( "10px" );
+		edge.style.right = ( "10px" );
+		edge.style.border = "2px solid #CC0000";
+		edge.style.borderRadius = "5px 5px 5px 5px";
+		document.body.appendChild( edge );
+}, false)
 
 window.addEventListener("deviceorientation", function(event) {
 	var beta = event.beta
