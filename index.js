@@ -104,7 +104,8 @@ updateRocketPositionY = function(beta) {
 
 		if (newPositionTop < 0) newPositionTop = 0
 		else if (newPositionTop > maxPositionTop) {
-			window.scrollBy(0, diffY)
+			newPositionTop = maxPositionTop
+			window.scrollBy(0, 2 * diffY)
 		}
 
 		if (newPositionTop != null){
