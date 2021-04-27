@@ -34,6 +34,8 @@ var doCalibrate = true
 var betaStandard = 0
 var gammaStandard = 0
 
+var rocketOnFact = 0
+
 window.addEventListener("deviceorientation", function(event) {
 	var beta = event.beta
 	var gamma = event.gamma
@@ -47,7 +49,7 @@ window.addEventListener("deviceorientation", function(event) {
 	beta = beta - betaStandard
 	gamma = gamma - gammaStandard
 
-	document.querySelector("#mag").innerHTML = "alpha = " + event.alpha
+	document.querySelector("#info").innerHTML = "alpha = " + event.alpha
 		+ "<br>" + "beta = " + beta + "<br>" + "gamma = " + gamma
 
 	if (!startPositionChecked) {
@@ -116,7 +118,7 @@ updateRocketPositionY = function(beta) {
 		}
 	}
 
-	document.querySelector("#mag").innerHTML += "<br>" + "newPositionTop = " + newPositionTop
+	document.querySelector("#info").innerHTML += "<br>" + "newPositionTop = " + rocketElement.style.top
 }
 
 updateRocketPositionX = function(gamma) {
@@ -138,7 +140,7 @@ updateRocketPositionX = function(gamma) {
 		}
 	}
 
-	document.querySelector("#mag").innerHTML += "<br>" + "newPositionLeft = " + newPositionLeft
+	document.querySelector("#info").innerHTML += "<br>" + "newPositionLeft = " + rocketElement.style.left
 }
 
 setFactPopup = function() {
@@ -150,7 +152,9 @@ setFactPopup = function() {
 		return parseInt(a.innerHTML) - parseInt(b.innerHTML)
 	})
 
+	var isRocketOnAFact = false
 	for (let i = 0; i < buttons.length; i++) {
+		if (rocketOnFact == i) continue
 		var popup = document.getElementById("fact_popup");
 
 		const buttonBounding = buttons[i].getBoundingClientRect()
@@ -160,10 +164,12 @@ setFactPopup = function() {
 		buttonBoundingXOnWindow = buttonBounding.y - window.scrollY;
 		if (buttonBounding.x < rocketCenterX && rocketCenterX < (buttonBounding.x + buttonBounding.width)) {
 			if (buttonBoundingXOnWindow < rocketCenterY && rocketCenterY < (buttonBoundingXOnWindow + buttonBounding.height)) {
+				isRocketOnAFact = true
+				rocketOnFact = i
 				var text = document.getElementById("fact_text")
 				text.innerHTML = facts[i]
 				if (!popup.classList.contains("show")) popup.classList.add("show")
-				break;
+				break
 			} else {
 				popup.classList.remove("show")
 			}
