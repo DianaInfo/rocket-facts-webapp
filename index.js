@@ -50,8 +50,6 @@ window.addEventListener("deviceorientation", function(event) {
 
 	document.querySelector("#old_positions").innerHTML = "top = " + oldPositionTop + "<br>" + "left = " + oldPositionLeft;
 
-	window.scrollBy(0,400)
-
 	var rocketBounding = rocketElement.getBoundingClientRect()
 
 	var newPositionTop = oldPositionTop + beta
@@ -71,6 +69,8 @@ window.addEventListener("deviceorientation", function(event) {
 
 	var buttons = document.getElementsByClassName("fact")
 
+	console.assert(buttons.length == facts.length)
+
 	for (let i = 0; i < buttons.length; i++) {
 		var popup = document.getElementById("fact_popup");
 
@@ -84,6 +84,7 @@ window.addEventListener("deviceorientation", function(event) {
 				var text = document.getElementById("fact_text")
 				text.innerHTML = facts[i]
 				popup.classList.add("show");
+				break;
 			} else {
 				popup.classList.remove("show")
 			}
