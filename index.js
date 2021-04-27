@@ -15,7 +15,7 @@ var facts = [
 ]
 
 window.onload = function() {
-	window.scrollTo(0,0);
+	window.scrollTo(0,0)
 }
 
 window.ondevicemotion = function(event) {
@@ -23,14 +23,14 @@ window.ondevicemotion = function(event) {
 	var ay = event.accelerationIncludingGravity.y
 	var az = event.accelerationIncludingGravity.z
 
-	document.querySelector("#acc").innerHTML = "X = " + ax + "<br>" + "Y = " + ay + "<br>" + "Z = " + az;
+	document.querySelector("#acc").innerHTML = "X = " + ax + "<br>" + "Y = " + ay + "<br>" + "Z = " + az
 }
 
 window.addEventListener("deviceorientation", function(event) {
 	var beta = event.beta
 	var gamma = event.gamma
 
-	document.querySelector("#mag").innerHTML = "alpha = " + event.alpha + "<br>" + "beta = " + event.beta + "<br>" + "gamma = " + event.gamma;
+	document.querySelector("#mag").innerHTML = "alpha = " + event.alpha + "<br>" + "beta = " + event.beta + "<br>" + "gamma = " + event.gamma
 
 	var rocketImage = document.querySelector("#rocket_image")
 	var image_path = "images/rocket_directions/rocket_fire_up_right.png"
@@ -45,10 +45,10 @@ window.addEventListener("deviceorientation", function(event) {
 	rocketImage.setAttribute("src", image_path)
 
 	var rocketElement = document.getElementById("rocket_div")
-	var oldPositionTop = rocketElement.offsetTop;
-	var oldPositionLeft = rocketElement.offsetLeft;
+	var oldPositionTop = rocketElement.offsetTop
+	var oldPositionLeft = rocketElement.offsetLeft
 
-	document.querySelector("#old_positions").innerHTML = "top = " + oldPositionTop + "<br>" + "left = " + oldPositionLeft;
+	document.querySelector("#old_positions").innerHTML = "top = " + oldPositionTop + "<br>" + "left = " + oldPositionLeft
 
 	var rocketBounding = rocketElement.getBoundingClientRect()
 
@@ -61,15 +61,20 @@ window.addEventListener("deviceorientation", function(event) {
 	else if (newPositionLeft > maxPositionLeft) newPositionLeft = maxPositionLeft
 
 	if (newPositionTop != null) {
-		window.scrollBy(0, 20 * beta)
+		var scrollByY = 0
+		if (beta > 50) scrollByY = 100
+		else if(beta > 30) scrollByY = 50
+		else if(beta > 10) scrollByY = 20
+		window.scrollBy(0, scrollByY)
 	}
 	if (newPositionLeft != null){
 		rocketElement.style.left = newPositionLeft + "px"
 	}
 
-	var buttons = document.getElementsByClassName("fact")
-
-	console.assert(buttons.length == facts.length)
+	var buttons = Array.from(document.getElementsByClassName("fact"))
+	buttons.sort(function(a,b) {
+		return parseInt(a.innerHTML) - parseInt(b.innerHTML)
+	})
 
 	for (let i = 0; i < buttons.length; i++) {
 		var popup = document.getElementById("fact_popup");
@@ -79,11 +84,11 @@ window.addEventListener("deviceorientation", function(event) {
 		var rocketCenterY = rocketBounding.y + 1/2 * rocketBounding.height
 
 		buttonBoundingXOnWindow = buttonBounding.y - window.scrollY;
-		if (buttonBounding.x < rocketCenterX < buttonBounding.x + buttonBounding.width) {
-			if (buttonBoundingXOnWindow < rocketCenterY < buttonBoundingXOnWindow + buttonBounding.height) {
+		if (buttonBounding.x < rocketCenterX < (buttonBounding.x + buttonBounding.width)) {
+			if (buttonBoundingXOnWindow < rocketCenterY < (buttonBoundingXOnWindow + buttonBounding.height)) {
 				var text = document.getElementById("fact_text")
 				text.innerHTML = facts[i]
-				popup.classList.add("show");
+				popup.classList.add("show")
 				break;
 			} else {
 				popup.classList.remove("show")
