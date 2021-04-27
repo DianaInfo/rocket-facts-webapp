@@ -1,3 +1,7 @@
+window.addEventListener("load", function() {
+	window.scrollTo(0,0)
+}, false)
+
 // facts from https://facts.net/science/technology/rocket-facts/
 var facts = [
 	"NASA has launched a total of 166 manned rockets to space missions.",
@@ -14,18 +18,8 @@ var facts = [
 	"Rockets launch in 3 stages."
 ]
 
-window.addEventListener("load", function() {
-	window.scrollTo(0,0)
-}, false)
-
-var startPositionChecked = false
 var minTiltDifferenceX = 2
 var minTiltDifferenceY = 5
-var tiltBackStart = -5
-var tiltForwardStart = 5
-var startAngle = 0
-var inertia = 5
-var scrollPosition = window.pageYOffset
 
 var up = true
 var right = true
@@ -33,8 +27,6 @@ var doCalibrate = true
 
 var betaStandard = 0
 var gammaStandard = 0
-
-var rocketOnFact = -1
 
 window.addEventListener("deviceorientation", function(event) {
 	var beta = event.beta
@@ -49,16 +41,21 @@ window.addEventListener("deviceorientation", function(event) {
 	beta = beta - betaStandard
 	gamma = gamma - gammaStandard
 
-	if (!startPositionChecked) {
-		startAngle = beta
-		tiltBackStart = startAngle - minTiltDifferenceY
-		tiltForwardStart = startAngle + minTiltDifferenceY
+	var popup = document.getElementById("fact_popup");
 
-		startPositionChecked = true
+	var factToShow = rocketOnButton()
+	if (factToShow != -1) {
+		var text = document.getElementById("fact_text")
+		text.innerHTML = facts[factToShow]
+		popup.classList.add("show")
+		popup.classList.remove("hide")
+	} else {
+		popup.classList.add("hide")
+		popup.classList.remove("show")
 	}
 
 	if (Math.abs(beta) > minTiltDifferenceY) {
-		up = beta < tiltBackStart
+		up = beta < -minTiltDifferenceY
 	}
 	if (Math.abs(gamma) > minTiltDifferenceX) {
 		right = gamma > minTiltDifferenceX
@@ -69,12 +66,8 @@ window.addEventListener("deviceorientation", function(event) {
 	updateRocketPositionY(beta)
 	updateRocketPositionX(gamma)
 
-	setFactPopup()
-
 	document.querySelector("#info").innerHTML = "alpha = " + event.alpha
 		+ "<br>" + "beta = " + beta + "<br>" + "gamma = " + gamma
-		+ "<br>" + "newPositionTop = " + document.getElementById("rocket_div").style.top
-		+ "<br>" + "newPositionLeft = " + document.getElementById("rocket_div").style.left
 
 }, true);
 
@@ -128,7 +121,6 @@ updateRocketPositionX = function(gamma) {
 	var oldPositionLeft = rocketElement.offsetLeft
 	var maxPositionLeft = window.innerWidth - rocketBounding.width
 
-	// Frage: wird es stockend die Bewegung, wenn ja zurück ändern
 	if (Math.abs(gamma) > minTiltDifferenceX) {
 		var newPositionLeft = oldPositionLeft + parseInt(gamma)
 
@@ -153,8 +145,44 @@ setFactPopup = function() {
 	var isRocketOnAFact = false
 	for (let i = 0; i < buttons.length; i++) {
 		if (rocketOnFact == i) continue
-		var popup = document.getElementById("fact_popup");
 
+		const buttonBounding = buttons[i].getBoundingClientRect()
+		var rocketCenterX = rocketBounding.x + 1/2 * rocketBounding.width
+		var rocketCenterY = rocketBounding.y + 1/2 * rocketBounding.height
+
+		if (buttonBounding.x < rocketCenterX && rocketCenterX < (buttonBounding.x + buttonBounding.width)) {
+			if (buttonBounding.y < rocketCenterY && rocketCenterY < (buttonBounding.y + buttonBounding.height)) {
+				var popup = document.getElementById("fact_popup");
+				isRocketOnAFact = true
+				rocketOnFact = i
+				var text = document.getElementById("fact_text")
+				text.innerHTML = facts[i]
+				popup.classList.remove("hide")
+				popup.classList.add("show")
+				break
+			}
+		}
+	};
+	if (!isRocketOnAFact) {
+		rocketOnFact = -1
+		popup.classList.remove("show")
+		popup.classList.add("hide")
+	}
+}
+
+rocketOnButton = function() {
+	var rocketElement = document.getElementById("rocket_div")
+	var rocketBounding = rocketElement.getBoundingClientRect()
+
+	var buttons = Array.from(document.getElementsByClassName("fact"))
+	buttons.sort(function(a,b) {
+		return parseInt(a.innerHTML) - parseInt(b.innerHTML)
+	})
+
+	var rocketOnFact = -1
+
+	var isRocketOnAFact = false
+	for (let i = 0; i < buttons.length; i++) {
 		const buttonBounding = buttons[i].getBoundingClientRect()
 		var rocketCenterX = rocketBounding.x + 1/2 * rocketBounding.width
 		var rocketCenterY = rocketBounding.y + 1/2 * rocketBounding.height
@@ -163,17 +191,12 @@ setFactPopup = function() {
 			if (buttonBounding.y < rocketCenterY && rocketCenterY < (buttonBounding.y + buttonBounding.height)) {
 				isRocketOnAFact = true
 				rocketOnFact = i
-				var text = document.getElementById("fact_text")
-				text.innerHTML = facts[i]
-				if (!popup.classList.contains("show")) popup.classList.add("show")
 				break
 			}
 		}
 	};
-	if (!isRocketOnAFact) {
-		rocketOnFact = -1
-		popup.classList.remove("show")
-	}
+
+	return rocketOnFact
 }
 
 calibrate = function() {
