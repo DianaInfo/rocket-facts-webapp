@@ -103,6 +103,8 @@ updateRocketPositionY = function(beta) {
 	var oldPositionTop = rocketElement.offsetTop
 	var maxPositionTop = document.documentElement.clientHeight - rocketBounding.height - rocketOffsetY
 
+	var newPositionY = oldPositionTop
+
 	if (Math.abs(beta) > minTiltDifferenceY) {
 		var diffY = parseInt(beta) / 2
 		var newPositionTop = oldPositionTop + diffY
@@ -112,9 +114,11 @@ updateRocketPositionY = function(beta) {
 
 		if (newPositionTop != null){
 			rocketElement.style.top = newPositionTop + "px"
-			adjustWindowScroll(newPositionTop, maxPositionTop)
 		}
+		newPositionY = newPositionTop
 	}
+
+	adjustWindowScroll(newPositionY, maxPositionTop)
 }
 
 adjustWindowScroll = function(newPositionTop, maxPositionTop) {
