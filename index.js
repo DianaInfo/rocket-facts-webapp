@@ -167,9 +167,9 @@ adjustWindowScroll = function(newPositionTop, maxPositionTop) {
 	} else {
 		for (var i = currentScrollY; i > nextScrollY; i-=step) {
 			if (i-step < nextScrollY) {
-				setTimeout("window.scrollTo({top: "+ nextScrollY + ", behavior: 'smooth'})", step * click)
+				setTimeout("window.scrollTo({top: "+ nextScrollY + ", behavior: 'smooth'})", step)
 			} else {
-				setTimeout("window.scrollTo({top: "+ i + ", behavior: 'smooth'})", step * click)
+				setTimeout("window.scrollTo({top: "+ i + ", behavior: 'smooth'})", step)
 			}
 			click++
 		}
