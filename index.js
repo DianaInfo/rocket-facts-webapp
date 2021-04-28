@@ -144,7 +144,7 @@ adjustWindowScroll = function(newPositionTop, maxPositionTop, rocketHeight) {
 	var canScrollDown = (currentScrollY < maxScrollY)
 
 	var maxStep = 100
-	var step = 30
+	var step = 5
 
 	if (isAtTop && canScrollUp && up) {
 		var intensity = (scrollOffsetY - newPositionTop) / scrollOffsetY
