@@ -152,7 +152,7 @@ function updateRocketPositionY(rocketElement, rocketBounding) {
 	rocketElement.style.top = newPositionTop + "px";
 }
 
-function updateScroll(scrollDirection) {
+async function updateScroll(scrollDirection) {
 	let maxStep = Math.sign(scrollDirection) * 50;
 
 	let documentHeight = Math.max(
@@ -172,13 +172,27 @@ function updateScroll(scrollDirection) {
 
 	if (scrollDirection < 0) {
 		for (let i = window.pageYOffset; i > nextScrollY; i--) {
-			setTimeout("window.scrollTo({top: " + i + ", behavior: 'smooth'})", 5);
+			await sleep(5);
+			window.scrollTo({
+				top: i,
+				behavior: 'smooth'
+			});
 		}
 	} else {
 		for (let i = window.pageYOffset; i < nextScrollY; i++) {
-			setTimeout("window.scrollTo({top: " + i + ", behavior: 'smooth'})", 5);
+			await sleep(5);
+			window.scrollTo({
+				top: i,
+				behavior: 'smooth'
+			});
 		}
 	}
+}
+
+function sleep(ms) {
+	return new Promise(res => {
+		setTimeout(() => res(), ms);
+	})
 }
 
 function getScrollDirection(rocketElement) {
