@@ -118,10 +118,10 @@ updateRocketPositionY = function(beta) {
 		newPositionY = newPositionTop
 	}
 
-	adjustWindowScroll(newPositionY, maxPositionTop)
+	adjustWindowScroll(newPositionY, maxPositionTop, rocketBounding.height)
 }
 
-adjustWindowScroll = function(newPositionTop, maxPositionTop) {
+adjustWindowScroll = function(newPositionTop, maxPositionTop, rocketHeight) {
 	var documentHeight = Math.max(
 		document.body.offsetHeight,
 		document.body.scrollHeight,
@@ -144,13 +144,13 @@ adjustWindowScroll = function(newPositionTop, maxPositionTop) {
 	var canScrollDown = (currentScrollY < maxScrollY)
 
 	var maxStep = 100
-	var step = 15
+	var step = 30
 
 	if (isAtTop && canScrollUp && up) {
 		var intensity = (scrollOffsetY - newPositionTop) / scrollOffsetY
 		nextScrollY = nextScrollY - (maxStep * intensity)
 	} else if (isAtBottom && canScrollDown && !up) {
-		var intensity = (newPositionTop - offsetBottom) / scrollOffsetY
+		var intensity = (newPositionTop - offsetBottom + rocketHeight) / scrollOffsetY
 		nextScrollY = nextScrollY + (maxStep * intensity)
 	}
 	nextScrollY = Math.max(0, Math.min(maxScrollY, nextScrollY))
