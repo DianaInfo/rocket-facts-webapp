@@ -29,6 +29,8 @@ var rocketOffsetY = 50
 
 var timer = null
 
+var currentRotationRocket = 0
+
 window.addEventListener("load", function() {
 	window.scrollTo(0,0)
 }, false)
@@ -45,6 +47,8 @@ window.addEventListener("deviceorientation", function(event) {
 
 	beta = beta - betaStandard
 	gamma = gamma - gammaStandard
+
+	document.getElementById("info").innerHTML = "beta = " + beta + "<br> gamma = " + gamma
 
 	var popup = document.getElementById("fact_popup");
 
@@ -66,11 +70,32 @@ window.addEventListener("deviceorientation", function(event) {
 		right = gamma > minTiltDifferenceX
 	}
 
-	updateImage()
+	updateImageOrientation(beta, gamma)
 
 	updateRocketPositionY(beta)
 	updateRocketPositionX(gamma)
 }, true);
+
+updateImageOrientation = function(beta, gamma) {
+	/*
+	TODO: degree 0-360
+	beta < 0 , gamma > 0 -> oben rechts
+	beta > 0 , gamma > 0 -> unten rechts
+	beta > 0 , gamma < 0 -> unten links
+	beta < 0 , gamma < 0 -> oben links
+	*/
+	if (beta < 0 && gamma > 0) {
+
+	}
+
+	currentRotationRocket += 5
+	currentRotationRocket = currentRotationRocket % 360
+
+	console.log(currentRotationRocket)
+
+	rocketElement = document.getElementById("rocket_div")
+	rocketElement.style.transform = "rotate(" + currentRotationRocket + "deg)"
+}
 
 updateImage = function() {
 	var rocketImage = document.querySelector("#rocket_image")
