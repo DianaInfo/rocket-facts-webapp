@@ -49,6 +49,7 @@ window.addEventListener("deviceorientation", function(event) {
 function calibrateDeviceOrientation(beta, gamma) {
 	actualBeta = beta - betaStandard;
 	actualGamma = gamma - gammaStandard;
+	document.getElementById("info").innerHTML = "<br> actualBeta = " + actualBeta
 }
 
 function calibrate() {
