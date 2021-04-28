@@ -24,7 +24,7 @@ var doCalibrate = true
 var betaStandard = 0
 var gammaStandard = 0
 
-var scrollOffsetY = 300
+var scrollOffsetY = 200
 var rocketOffsetY = 50
 
 var timer = null
