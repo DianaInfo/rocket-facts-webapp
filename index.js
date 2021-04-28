@@ -122,12 +122,6 @@ updateRocketPositionY = function(beta) {
 
 		if (newPositionTop != null){
 			rocketElement.style.top = newPositionTop + "px"
-			(function checkForWindowScroll() {
-				clearTimeout(timer);
-				if (adjustWindowScroll(newPositionTop, maxPositionTop)) {
-					timer = setTimeout(checkForWindowScroll, 30);
-				}
-			})();
 		}
 	}
 }
@@ -155,6 +149,7 @@ adjustWindowScroll = function(newPositionTop, maxPositionTop) {
 	var canScrollDown = (currentScrollY < maxScrollY)
 
 	var maxStep = 50
+	var step = 10
 
 	var str_intensity = ""
 	if (isAtTop && canScrollUp && up) {
@@ -168,6 +163,27 @@ adjustWindowScroll = function(newPositionTop, maxPositionTop) {
 	}
 
 	nextScrollY = Math.max(0, Math.min(maxScrollY, nextScrollY))
+
+	var click = 0
+	if (currentScrollY < nextScrollY) {
+		for (var i = currentScrollY; i < nextScrollY; i+=step) {
+			if (i+step > nextScrollY) {
+				setTimeout("window.scroll({top: "+ nextScrollY + "behavior: 'smooth'})", step * click)
+			} else {
+				setTimeout("window.scroll({top: "+ nextScrollY + "behavior: 'smooth'})", step * click)
+			}
+			click++
+		}
+	} else {
+		for (var i = currentScrollY; i > nextScrollY; i-=step) {
+			if (i-step < nextScrollY) {
+				setTimeout("window.scroll({top: "+ nextScrollY + "behavior: 'smooth'})", step * click)
+			} else {
+				setTimeout("window.scroll({top: "+ nextScrollY + "behavior: 'smooth'})", step * click)
+			}
+			click++
+		}
+	}
 
 	window.scroll({
 		top: nextScrollY,
