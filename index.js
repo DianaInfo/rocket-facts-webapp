@@ -41,7 +41,7 @@ window.addEventListener("deviceorientation", function(event) {
 
 	updateRocket(rocketElement);
 
-	scrollDirection = getScrollDirection(rocketElement);
+	let scrollDirection = getScrollDirection(rocketElement);
 	if (scrollDirection != 0) updateScroll(scrollDirection);
 
 }, true);
@@ -171,7 +171,7 @@ function updateScroll(scrollDirection) {
 	else if (nextScrollY > maxScrollY) nextScrollY = maxScrollY;
 
 	if (scrollDirection < 0) {
-		for (let i = window.pageYOffset; i < nextScrollY; i--) {
+		for (let i = window.pageYOffset; i > nextScrollY; i--) {
 			setTimeout("window.scrollTo({top: " + i + ", behavior: 'smooth'})", 5);
 		}
 	} else {
@@ -184,6 +184,7 @@ function updateScroll(scrollDirection) {
 function getScrollDirection(rocketElement) {
 	let rocketBounding = rocketElement.getBoundingClientRect();
 
+	// for browser compatibility
 	let documentHeight = Math.max(
 		document.body.offsetHeight,
 		document.body.scrollHeight,
@@ -195,7 +196,7 @@ function getScrollDirection(rocketElement) {
 	let maxPositionTop = document.documentElement.clientHeight - rocketBounding.height - rocketOffsetY;
 	let maxScrollY = documentHeight - document.documentElement.clientHeight;
 
-	let isAtTop = rocketElement.offsetTop < rocketOffsetY;
+	let isAtTop = rocketElement.offsetTop < rocketOffsetY + scrollOffsetY;
 	let isAtBottom = rocketElement.offsetTop > maxPositionTop - scrollOffsetY;
 
 	let canScrollUp = window.pageYOffset > 0;
