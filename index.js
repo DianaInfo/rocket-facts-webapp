@@ -28,27 +28,21 @@ let scrollOffsetY = 100;
 
 let up = true;
 
-let locked = false;
-
 window.addEventListener("load", function() {
 	window.scrollTo(0,0);
 }, false)
 
 window.addEventListener("deviceorientation", async function(event) {
-	if (!locked) {
-		locked = true;
-		const rocketElement = document.getElementById("rocket_div");
+	const rocketElement = document.getElementById("rocket_div");
 
-		calibrateDeviceOrientation(event.beta, event.gamma);
+	calibrateDeviceOrientation(event.beta, event.gamma);
 
-		setFactPopup(rocketElement);
+	setFactPopup(rocketElement);
 
-		updateRocket(rocketElement);
+	updateRocket(rocketElement);
 
-		let scrollDirection = getScrollDirection(rocketElement);
-		if (scrollDirection != 0) await updateScroll(scrollDirection);
-		locked = false;
-	}
+	let scrollDirection = getScrollDirection(rocketElement);
+	if (scrollDirection != 0) await updateScroll(scrollDirection);
 }, true);
 
 function calibrateDeviceOrientation(beta, gamma) {
