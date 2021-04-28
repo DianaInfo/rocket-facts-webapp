@@ -144,7 +144,7 @@ adjustWindowScroll = function(newPositionTop, maxPositionTop) {
 	var canScrollDown = (currentScrollY < maxScrollY)
 
 	var maxStep = 100
-	var step = 10
+	var step = 2
 
 	if (isAtTop && canScrollUp && up) {
 		var intensity = (scrollOffsetY - newPositionTop) / scrollOffsetY
@@ -168,9 +168,9 @@ adjustWindowScroll = function(newPositionTop, maxPositionTop) {
 	} else {
 		for (var i = currentScrollY; i > nextScrollY; i-=step) {
 			if (i-step < nextScrollY) {
-				setTimeout("window.scroll({top: "+ nextScrollY + "behavior: 'smooth'})", step * click)
+				setTimeout("window.scroll({top: "+ nextScrollY + ", behavior: 'smooth'})", step * click)
 			} else {
-				setTimeout("window.scroll({top: "+ nextScrollY + "behavior: 'smooth'})", step * click)
+				setTimeout("window.scroll({top: "+ i + ", behavior: 'smooth'})", step * click)
 			}
 			click++
 		}
