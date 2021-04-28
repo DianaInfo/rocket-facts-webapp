@@ -173,11 +173,6 @@ adjustWindowScroll = function(newPositionTop, maxPositionTop, rocketHeight) {
 		}
 	}
 
-	window.scroll({
-		top: nextScrollY,
-		behavior: "smooth"
-	})
-
 	return currentScrollY != nextScrollY
 }
 
