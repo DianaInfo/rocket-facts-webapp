@@ -122,6 +122,7 @@ updateRocketPositionY = function(beta) {
 
 		if (newPositionTop != null){
 			rocketElement.style.top = newPositionTop + "px"
+			adjustWindowScroll(newPositionTop, maxPositionTop)
 		}
 	}
 }
