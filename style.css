@@ -142,7 +142,6 @@
     }
 }
 
-
 @media (min-width: 60rem) and (max-width: 70rem) {
 
     #rocket_div {
@@ -157,10 +156,6 @@
 
     #title {
         font-size: 3rem;
-    }
-
-    #facts_section {
-        grid-template-columns: 1fr 1fr;
     }
 }
 
@@ -179,11 +174,6 @@
     #title {
         font-size: 3rem;
     }
-
-    #facts_section {
-        grid-template-columns: 1fr 1fr;
-    }
-
 }
 
 @media (max-width: 40rem) {
@@ -202,9 +192,4 @@
         font-size: 2rem;
         padding: 10rem 5rem 0 0;
     }
-
-    #facts_section {
-        grid-template-columns: 1fr 1fr;
-    }
-
 }
