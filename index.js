@@ -28,6 +28,8 @@ let scrollOffsetY = 100;
 
 let up = true;
 
+let locked = false;
+
 window.addEventListener("load", function() {
 	window.scrollTo(0,0);
 }, false)
@@ -171,22 +173,26 @@ async function updateScroll(scrollDirection) {
 	if (nextScrollY < 0) nextScrollY = 0;
 	else if (nextScrollY > maxScrollY) nextScrollY = maxScrollY;
 
-	if (scrollDirection < 0) {
-		for (let i = window.pageYOffset; i > nextScrollY; i--) {
-			await sleep(5);
-			window.scrollTo({
-				top: i,
-				behavior: 'smooth'
-			});
+    if (!locked) {
+		locked = true;
+		if (scrollDirection < 0) {
+			for (let i = window.pageYOffset; i > nextScrollY; i--) {
+				await sleep(5);
+				window.scrollTo({
+					top: i,
+					behavior: 'smooth'
+				});
+			}
+		} else {
+			for (let i = window.pageYOffset; i < nextScrollY; i++) {
+				await sleep(5);
+				window.scrollTo({
+					top: i,
+					behavior: 'smooth'
+				});
+			}
 		}
-	} else {
-		for (let i = window.pageYOffset; i < nextScrollY; i++) {
-			await sleep(5);
-			window.scrollTo({
-				top: i,
-				behavior: 'smooth'
-			});
-		}
+		locked = false;
 	}
 }
 
