@@ -158,17 +158,17 @@ adjustWindowScroll = function(newPositionTop, maxPositionTop, rocketHeight) {
 	if (currentScrollY < nextScrollY) {
 		for (var i = currentScrollY; i < nextScrollY; i+=step) {
 			if (i+step > nextScrollY) {
-				setTimeout("window.scrollTo({top: "+ nextScrollY + ", behavior: 'smooth'})", step)
+				setTimeout("window.scrollTo({top: "+ nextScrollY + ", behavior: 'smooth'})", 1)
 			} else {
-				setTimeout("window.scrollTo({top: "+ i + ", behavior: 'smooth'})", step)
+				setTimeout("window.scrollTo({top: "+ i + ", behavior: 'smooth'})", 1)
 			}
 		}
 	} else {
 		for (var i = currentScrollY; i > nextScrollY; i-=step) {
 			if (i-step < nextScrollY) {
-				setTimeout("window.scrollTo({top: "+ nextScrollY + ", behavior: 'smooth'})", step)
+				setTimeout("window.scrollTo({top: "+ nextScrollY + ", behavior: 'smooth'})", 1)
 			} else {
-				setTimeout("window.scrollTo({top: "+ i + ", behavior: 'smooth'})", step)
+				setTimeout("window.scrollTo({top: "+ i + ", behavior: 'smooth'})", 1)
 			}
 		}
 	}
