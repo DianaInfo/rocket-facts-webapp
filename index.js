@@ -1,5 +1,5 @@
 // facts from https://facts.net/science/technology/rocket-facts/
-var facts = [
+let facts = [
 	"NASA has launched a total of 166 manned rockets to space missions.",
 	"Rockets have been used in space travel for over 70 years.",
 	"NASA rockets cost $500 million to build and launch.",
@@ -12,117 +12,169 @@ var facts = [
 	"A rocket caused the first space-related death.",
 	"Rockets are extremely hot.",
 	"Rockets launch in 3 stages."
-]
+];
 
-var minTiltDifferenceX = 2
-var minTiltDifferenceY = 5
+let minTiltDifferenceX = 2;
+let minTiltDifferenceY = 5;
 
-var up = true
-var right = true
-var doCalibrate = true
+let actualBeta = 0;
+let actualGamma = 0;
 
-var betaStandard = 0
-var gammaStandard = 0
+let betaStandard = 0;
+let gammaStandard = 0;
 
-var scrollOffsetY = 200
-var rocketOffsetY = 50
+let rocketOffsetY = 30;
 
-var timer = null
+let up = true;
 
 window.addEventListener("load", function() {
-	window.scrollTo(0,0)
+	window.scrollTo(0,0);
 }, false)
 
 window.addEventListener("deviceorientation", function(event) {
-	var beta = event.beta
-	var gamma = event.gamma
+	const rocketElement = document.getElementById("rocket_div");
 
-	if (doCalibrate) {
-		betaStandard = beta
-		gammaStandard = gamma
-		doCalibrate = false
-	}
+	calibrateDeviceOrientation(event.beta, event.gamma);
 
-	beta = beta - betaStandard
-	gamma = gamma - gammaStandard
+	setFactPopup(rocketElement);
 
-	var popup = document.getElementById("fact_popup");
+	updateRocket(rocketElement);
 
-	var factToShow = rocketOnButton()
-	if (factToShow != -1) {
-		var text = document.getElementById("fact_text")
-		text.innerHTML = facts[factToShow]
-		popup.classList.add("show")
-		popup.classList.remove("hide")
-	} else {
-		popup.classList.add("hide")
-		popup.classList.remove("show")
-	}
+	scrollDirection = getScrollDirection(rocketElement);
+	if (scrollDirection != 0) updateScroll(scrollDirection);
 
-	if (Math.abs(beta) > minTiltDifferenceY) {
-		up = beta < -minTiltDifferenceY
-	}
-	if (Math.abs(gamma) > minTiltDifferenceX) {
-		right = gamma > minTiltDifferenceX
-	}
-
-	updateImage()
-
-	updateRocketPositionY(beta)
-	updateRocketPositionX(gamma)
 }, true);
 
-updateImage = function() {
-	var rocketImage = document.querySelector("#rocket_image")
-	var oldImagePath = rocketImage.getAttribute("src")
-	var newImagePath = ""
+function calibrateDeviceOrientation(beta, gamma) {
+	actualBeta = beta - betaStandard;
+	actualGamma = gamma - gammaStandard;
+}
 
-	if(up) {
-		if (right) {
-			newImagePath = "images/rocket_directions/rocket_fire_up_right.png"
+function calibrate() {
+	betaStandard = actualBeta;
+	gammaStandard = actualGamma;
+}
+
+function setFactPopup(rocketElement) {
+	const popup = document.getElementById("fact_popup");
+	const buttons = Array.from(document.getElementsByClassName("fact"));
+
+	let rocketBounding = rocketElement.getBoundingClientRect();
+
+	let rocketCenterX = rocketBounding.x + rocketBounding.width / 2;
+	let rocketCenterY = rocketBounding.y + rocketBounding.height / 2;
+
+	let rocketOnButtonIndex;
+	for (let i = 0; i < buttons.length; i++) {
+		const buttonBounding = buttons[i].getBoundingClientRect();
+
+		if (buttonBounding.x < rocketCenterX && rocketCenterX < (buttonBounding.x + buttonBounding.width)) {
+			if (buttonBounding.y < rocketCenterY && rocketCenterY < (buttonBounding.y + buttonBounding.height)) {
+				rocketOnButtonIndex = i;
+				break;
+			}
+		}
+	}
+
+	//set popup
+	if (rocketOnButtonIndex === undefined) {
+		popup.classList.add("hide");
+		popup.classList.remove("show");
+	} else {
+		let text = document.getElementById("fact_text");
+		text.innerHTML = facts[rocketOnButtonIndex];
+		popup.classList.add("show");
+		popup.classList.remove("hide");
+	}
+}
+
+function updateRocket(rocketElement) {
+	let rocketBounding = rocketElement.getBoundingClientRect()
+
+	updateRocketImage();
+
+	if (Math.abs(actualGamma) > minTiltDifferenceX) {
+		updateRocketPositionX(rocketElement, rocketBounding);
+	}
+
+	if (Math.abs(actualBeta) > minTiltDifferenceY) {
+		updateRocketPositionY(rocketElement, rocketBounding);
+	}
+}
+
+function updateRocketImage() {
+	const rocketImage = document.getElementById("rocket_image");
+
+	let oldImagePath = rocketImage.getAttribute("src");
+	let newImagePath = "";
+
+	if (Math.abs(actualBeta) > minTiltDifferenceY) {
+		up = actualBeta < -minTiltDifferenceY;
+	}
+
+	if (actualGamma > minTiltDifferenceX) {
+		if (up) {
+			newImagePath = "images/rocket_directions/rocket_fire_up_right.png";
 		} else {
-			newImagePath = "images/rocket_directions/rocket_fire_up_left.png"
+			newImagePath = "images/rocket_directions/rocket_fire_down_right.png";
 		}
 	} else {
-		if (right) {
-			newImagePath = "images/rocket_directions/rocket_fire_down_right.png"
+		if (up) {
+			newImagePath = "images/rocket_directions/rocket_fire_up_left.png";
 		} else {
-			newImagePath = "images/rocket_directions/rocket_fire_down_left.png"
+			newImagePath = "images/rocket_directions/rocket_fire_down_left.png";
 		}
 	}
 
 	if (oldImagePath != newImagePath && newImagePath != "") {
-		rocketImage.setAttribute("src", newImagePath)
+		rocketImage.setAttribute("src", newImagePath);
 	}
 }
 
-updateRocketPositionY = function(beta) {
-	var rocketElement = document.getElementById("rocket_div")
-	var rocketBounding = rocketElement.getBoundingClientRect()
+function updateRocketPositionX(rocketElement, rocketBounding) {
+	let newPositionLeft = rocketElement.offsetLeft + parseInt(actualGamma) / 2;
+	let maxPositionLeft = window.innerWidth - rocketBounding.width;
 
-	var oldPositionTop = rocketElement.offsetTop
-	var maxPositionTop = document.documentElement.clientHeight - rocketBounding.height - rocketOffsetY
+	if (newPositionLeft < 0) newPositionLeft = 0;
+	else if (newPositionLeft > maxPositionLeft) newPositionLeft = maxPositionLeft;
 
-	var newPositionY = oldPositionTop
+	rocketElement.style.left = newPositionLeft + "px";
+}
 
-	if (Math.abs(beta) > minTiltDifferenceY) {
-		var diffY = parseInt(beta) / 2
-		var newPositionTop = oldPositionTop + diffY
+function updateRocketPositionY(rocketElement, rocketBounding) {
+	let newPositionTop = rocketElement.offsetTop + parseInt(actualBeta) / 2;
+	let maxPositionTop = document.documentElement.clientHeight - rocketBounding.height - rocketOffsetY;
 
-		if (newPositionTop < rocketOffsetY) newPositionTop = rocketOffsetY
-		else if (newPositionTop > maxPositionTop) newPositionTop = maxPositionTop
+	if (newPositionTop < rocketOffsetY) newPositionTop = rocketOffsetY;
+	else if (newPositionTop > maxPositionTop) newPositionTop = maxPositionTop;
 
-		if (newPositionTop != null){
-			rocketElement.style.top = newPositionTop + "px"
+	rocketElement.style.top = newPositionTop + "px";
+}
+
+function updateScroll(scrollDirection) {
+	let maxStep = Math.sign(scrollDirection) * 50;
+	let maxScrollY = documentHeight - document.documentElement.clientHeight;
+
+	let nextScrollY = window.pageYOffset - maxStep;
+
+	if (nextScrollY < 0) nextScrollY = 0;
+	else if (nextScrollY > maxScrollY) nextScrollY = maxScrollY;
+
+	if (scrollDirection < 0) {
+		for (let i = window.pageYOffset; i < nextScrollY; i++) {
+			setTimeout("window.scrollTo({top: " + i + ", behavior: 'smooth'})", 5);
 		}
-		newPositionY = newPositionTop
+	} else {
+		for (let i = window.pageYOffset; i < nextScrollY; i--) {
+			setTimeout("window.scrollTo({top: " + i + ", behavior: 'smooth'})", 5);
+		}
 	}
-
-	adjustWindowScroll(newPositionY, maxPositionTop, rocketBounding.height)
 }
 
-adjustWindowScroll = function(newPositionTop, maxPositionTop, rocketHeight) {
-	var documentHeight = Math.max(
+function getScrollDirection(rocketElement) {
+	let rocketBounding = rocketElement.getBoundingClientRect();
+
+	let documentHeight = Math.max(
 		document.body.offsetHeight,
 		document.body.scrollHeight,
 		document.body.clientHeight,
@@ -130,141 +182,16 @@ adjustWindowScroll = function(newPositionTop, maxPositionTop, rocketHeight) {
 		document.documentElement.scrollHeight,
 		document.documentElement.clientHeight,
 	);
+	let maxPositionTop = document.documentElement.clientHeight - rocketBounding.height - rocketOffsetY;
+	let maxScrollY = documentHeight - document.documentElement.clientHeight;
 
-	var maxScrollY = documentHeight - document.documentElement.clientHeight
+	let isAtTop = rocketElement.offsetTop < rocketOffsetY;
+	let isAtBottom = rocketElement.offsetTop > maxPositionTop;
 
-	var currentScrollY = window.pageYOffset
-	var offsetBottom = maxPositionTop - scrollOffsetY
+	let canScrollUp = window.pageYOffset > 0;
+	let canScrollDown = window.pageYOffset < maxScrollY;
 
-	var nextScrollY = currentScrollY
-
-	var isAtTop = (newPositionTop < scrollOffsetY)
-	var isAtBottom = (newPositionTop > offsetBottom)
-	var canScrollUp = (currentScrollY > 0)
-	var canScrollDown = (currentScrollY < maxScrollY)
-
-	var maxStep = 100
-	var step = 5
-
-	if (isAtTop && canScrollUp && up) {
-		var intensity = (scrollOffsetY - newPositionTop) / scrollOffsetY
-		document.getElementById("info").innerHTML = "<br>    up"
-		nextScrollY = nextScrollY - (maxStep * intensity)
-	} else if (isAtBottom && canScrollDown && !up) {
-		var intensity = (newPositionTop - offsetBottom + rocketHeight) / scrollOffsetY
-		document.getElementById("info").innerHTML = "<br>    down"
-		nextScrollY = nextScrollY + (maxStep * intensity)
-	} else {
-		document.getElementById("info").innerHTML = "<br>     -"
-	}
-	nextScrollY = Math.max(0, Math.min(maxScrollY, nextScrollY))
-
-	if (currentScrollY < nextScrollY) {
-		for (var i = currentScrollY; i < nextScrollY; i+=step) {
-			if (i+step > nextScrollY) {
-				setTimeout("window.scrollTo({top: "+ nextScrollY + ", behavior: 'smooth'})", 1)
-			} else {
-				setTimeout("window.scrollTo({top: "+ i + ", behavior: 'smooth'})", 1)
-			}
-		}
-	} else {
-		for (var i = currentScrollY; i > nextScrollY; i-=step) {
-			if (i-step < nextScrollY) {
-				setTimeout("window.scrollTo({top: "+ nextScrollY + ", behavior: 'smooth'})", 1)
-			} else {
-				setTimeout("window.scrollTo({top: "+ i + ", behavior: 'smooth'})", 1)
-			}
-		}
-	}
-
-	document.getElementById("info")
-
-	return currentScrollY != nextScrollY
-}
-
-updateRocketPositionX = function(gamma) {
-	var rocketElement = document.getElementById("rocket_div")
-	var rocketBounding = rocketElement.getBoundingClientRect()
-
-	var oldPositionLeft = rocketElement.offsetLeft
-	var maxPositionLeft = window.innerWidth - rocketBounding.width
-
-	if (Math.abs(gamma) > minTiltDifferenceX) {
-		var newPositionLeft = oldPositionLeft + (parseInt(gamma)/2)
-
-		if (newPositionLeft < 0) newPositionLeft = 0
-		else if (newPositionLeft > maxPositionLeft) newPositionLeft = maxPositionLeft
-
-		if (newPositionLeft != null){
-			rocketElement.style.left = newPositionLeft + "px"
-		}
-	}
-}
-
-setFactPopup = function() {
-	var rocketElement = document.getElementById("rocket_div")
-	var rocketBounding = rocketElement.getBoundingClientRect()
-
-	var buttons = Array.from(document.getElementsByClassName("fact"))
-	buttons.sort(function(a,b) {
-		return parseInt(a.innerHTML) - parseInt(b.innerHTML)
-	})
-
-	var isRocketOnAFact = false
-	for (let i = 0; i < buttons.length; i++) {
-		if (rocketOnFact == i) continue
-
-		const buttonBounding = buttons[i].getBoundingClientRect()
-		var rocketCenterX = rocketBounding.x + 1/2 * rocketBounding.width
-		var rocketCenterY = rocketBounding.y + 1/2 * rocketBounding.height
-
-		if (buttonBounding.x < rocketCenterX && rocketCenterX < (buttonBounding.x + buttonBounding.width)) {
-			if (buttonBounding.y < rocketCenterY && rocketCenterY < (buttonBounding.y + buttonBounding.height)) {
-				var popup = document.getElementById("fact_popup");
-				isRocketOnAFact = true
-				rocketOnFact = i
-				var text = document.getElementById("fact_text")
-				text.innerHTML = facts[i]
-				popup.classList.remove("hide")
-				popup.classList.add("show")
-				break
-			}
-		}
-	};
-	if (!isRocketOnAFact) {
-		rocketOnFact = -1
-		popup.classList.remove("show")
-		popup.classList.add("hide")
-	}
-}
-
-rocketOnButton = function() {
-	var rocketElement = document.getElementById("rocket_div")
-	var rocketBounding = rocketElement.getBoundingClientRect()
-
-	var buttons = Array.from(document.getElementsByClassName("fact"))
-	buttons.sort(function(a,b) {
-		return parseInt(a.innerHTML) - parseInt(b.innerHTML)
-	})
-
-	var rocketOnFact = -1
-	for (let i = 0; i < buttons.length; i++) {
-		const buttonBounding = buttons[i].getBoundingClientRect()
-		var rocketCenterX = rocketBounding.x + 1/2 * rocketBounding.width
-		var rocketCenterY = rocketBounding.y + 1/2 * rocketBounding.height
-
-		if (buttonBounding.x < rocketCenterX && rocketCenterX < (buttonBounding.x + buttonBounding.width)) {
-			if (buttonBounding.y < rocketCenterY && rocketCenterY < (buttonBounding.y + buttonBounding.height)) {
-				isRocketOnAFact = true
-				rocketOnFact = i
-				break
-			}
-		}
-	};
-
-	return rocketOnFact
-}
-
-calibrate = function() {
-	doCalibrate = true
+	if (isAtTop && canScrollUp && up) return -1;
+	else if (isAtBottom && canScrollDown && !up) return 1;
+	else return 0;
 }
