@@ -148,10 +148,14 @@ adjustWindowScroll = function(newPositionTop, maxPositionTop, rocketHeight) {
 
 	if (isAtTop && canScrollUp && up) {
 		var intensity = (scrollOffsetY - newPositionTop) / scrollOffsetY
+		document.getElementById("info").innerHTML = "<br>    up"
 		nextScrollY = nextScrollY - (maxStep * intensity)
 	} else if (isAtBottom && canScrollDown && !up) {
 		var intensity = (newPositionTop - offsetBottom + rocketHeight) / scrollOffsetY
+		document.getElementById("info").innerHTML = "<br>    down"
 		nextScrollY = nextScrollY + (maxStep * intensity)
+	} else {
+		document.getElementById("info").innerHTML = "<br>     -"
 	}
 	nextScrollY = Math.max(0, Math.min(maxScrollY, nextScrollY))
 
@@ -172,6 +176,8 @@ adjustWindowScroll = function(newPositionTop, maxPositionTop, rocketHeight) {
 			}
 		}
 	}
+
+	document.getElementById("info")
 
 	return currentScrollY != nextScrollY
 }
