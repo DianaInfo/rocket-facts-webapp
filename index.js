@@ -34,18 +34,23 @@ window.addEventListener("load", function() {
 	window.scrollTo(0,0);
 }, false)
 
-window.addEventListener("deviceorientation", function(event) {
-	const rocketElement = document.getElementById("rocket_div");
+window.addEventListener("deviceorientation", async function(event) {
+	if (!locked) {
+		console.log("Locked")
+		locked = true;
+		const rocketElement = document.getElementById("rocket_div");
 
-	calibrateDeviceOrientation(event.beta, event.gamma);
+		calibrateDeviceOrientation(event.beta, event.gamma);
 
-	setFactPopup(rocketElement);
+		setFactPopup(rocketElement);
 
-	updateRocket(rocketElement);
+		updateRocket(rocketElement);
 
-	let scrollDirection = getScrollDirection(rocketElement);
-	if (scrollDirection != 0) updateScroll(scrollDirection);
-
+		let scrollDirection = getScrollDirection(rocketElement);
+		if (scrollDirection != 0) await updateScroll(scrollDirection);
+		locked = false;
+		console.log("Unlocked")
+	}
 }, true);
 
 function calibrateDeviceOrientation(beta, gamma) {
@@ -173,26 +178,24 @@ async function updateScroll(scrollDirection) {
 	if (nextScrollY < 0) nextScrollY = 0;
 	else if (nextScrollY > maxScrollY) nextScrollY = maxScrollY;
 
-    if (!locked) {
-		locked = true;
-		if (scrollDirection < 0) {
-			for (let i = window.pageYOffset; i > nextScrollY; i--) {
-				await sleep(5);
-				window.scrollTo({
-					top: i,
-					behavior: 'smooth'
-				});
-			}
-		} else {
-			for (let i = window.pageYOffset; i < nextScrollY; i++) {
-				await sleep(5);
-				window.scrollTo({
-					top: i,
-					behavior: 'smooth'
-				});
-			}
+	if (scrollDirection < 0) {
+		for (let i = window.pageYOffset; i > nextScrollY; i--) {
+			await sleep(5);
+			console.log("scroll")
+			window.scrollTo({
+				top: i,
+				behavior: 'smooth'
+			});
 		}
-		locked = false;
+	} else {
+		for (let i = window.pageYOffset; i < nextScrollY; i++) {
+			await sleep(5);
+			console.log("scroll")
+			window.scrollTo({
+				top: i,
+				behavior: 'smooth'
+			});
+		}
 	}
 }
 
