@@ -36,7 +36,6 @@ window.addEventListener("load", function() {
 
 window.addEventListener("deviceorientation", async function(event) {
 	if (!locked) {
-		console.log("Locked")
 		locked = true;
 		const rocketElement = document.getElementById("rocket_div");
 
@@ -49,7 +48,6 @@ window.addEventListener("deviceorientation", async function(event) {
 		let scrollDirection = getScrollDirection(rocketElement);
 		if (scrollDirection != 0) await updateScroll(scrollDirection);
 		locked = false;
-		console.log("Unlocked")
 	}
 }, true);
 
@@ -181,7 +179,6 @@ async function updateScroll(scrollDirection) {
 	if (scrollDirection < 0) {
 		for (let i = window.pageYOffset; i > nextScrollY; i--) {
 			await sleep(1);
-			console.log("scroll")
 			window.scrollTo({
 				top: i,
 				behavior: 'smooth'
@@ -190,7 +187,6 @@ async function updateScroll(scrollDirection) {
 	} else {
 		for (let i = window.pageYOffset; i < nextScrollY; i++) {
 			await sleep(1);
-			console.log("scroll")
 			window.scrollTo({
 				top: i,
 				behavior: 'smooth'
