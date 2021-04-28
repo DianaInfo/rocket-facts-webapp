@@ -180,7 +180,7 @@ async function updateScroll(scrollDirection) {
 
 	if (scrollDirection < 0) {
 		for (let i = window.pageYOffset; i > nextScrollY; i--) {
-			await sleep(5);
+			await sleep(1);
 			console.log("scroll")
 			window.scrollTo({
 				top: i,
@@ -189,7 +189,7 @@ async function updateScroll(scrollDirection) {
 		}
 	} else {
 		for (let i = window.pageYOffset; i < nextScrollY; i++) {
-			await sleep(5);
+			await sleep(1);
 			console.log("scroll")
 			window.scrollTo({
 				top: i,
