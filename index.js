@@ -150,7 +150,7 @@ adjustWindowScroll = function(newPositionTop, maxPositionTop) {
 	var canScrollDown = (currentScrollY < maxScrollY)
 
 	var maxStep = 50
-	var step = 10
+	var step = 3
 
 	var str_intensity = ""
 	if (isAtTop && canScrollUp && up) {
