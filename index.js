@@ -24,6 +24,7 @@ let betaStandard = 0;
 let gammaStandard = 0;
 
 let rocketOffsetY = 30;
+let scrollOffsetY = 100;
 
 let up = true;
 
@@ -153,19 +154,28 @@ function updateRocketPositionY(rocketElement, rocketBounding) {
 
 function updateScroll(scrollDirection) {
 	let maxStep = Math.sign(scrollDirection) * 50;
+
+	let documentHeight = Math.max(
+		document.body.offsetHeight,
+		document.body.scrollHeight,
+		document.body.clientHeight,
+		document.documentElement.offsetHeight,
+		document.documentElement.scrollHeight,
+		document.documentElement.clientHeight,
+	);
 	let maxScrollY = documentHeight - document.documentElement.clientHeight;
 
-	let nextScrollY = window.pageYOffset - maxStep;
+	let nextScrollY = window.pageYOffset + maxStep;
 
 	if (nextScrollY < 0) nextScrollY = 0;
 	else if (nextScrollY > maxScrollY) nextScrollY = maxScrollY;
 
 	if (scrollDirection < 0) {
-		for (let i = window.pageYOffset; i < nextScrollY; i++) {
+		for (let i = window.pageYOffset; i < nextScrollY; i--) {
 			setTimeout("window.scrollTo({top: " + i + ", behavior: 'smooth'})", 5);
 		}
 	} else {
-		for (let i = window.pageYOffset; i < nextScrollY; i--) {
+		for (let i = window.pageYOffset; i < nextScrollY; i++) {
 			setTimeout("window.scrollTo({top: " + i + ", behavior: 'smooth'})", 5);
 		}
 	}
@@ -186,7 +196,7 @@ function getScrollDirection(rocketElement) {
 	let maxScrollY = documentHeight - document.documentElement.clientHeight;
 
 	let isAtTop = rocketElement.offsetTop < rocketOffsetY;
-	let isAtBottom = rocketElement.offsetTop > maxPositionTop;
+	let isAtBottom = rocketElement.offsetTop > maxPositionTop - scrollOffsetY;
 
 	let canScrollUp = window.pageYOffset > 0;
 	let canScrollDown = window.pageYOffset < maxScrollY;
