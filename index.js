@@ -31,16 +31,6 @@ var timer = null
 
 window.addEventListener("load", function() {
 	window.scrollTo(0,0)
-
-	var edge = document.createElement( "span" );
-		edge.style.position = "fixed";
-		edge.style.top = ( scrollOffsetY + "px" );
-		edge.style.bottom = ( scrollOffsetY + "px" );
-		edge.style.left = ( "10px" );
-		edge.style.right = ( "10px" );
-		edge.style.border = "2px solid #CC0000";
-		edge.style.borderRadius = "5px 5px 5px 5px";
-		document.body.appendChild( edge );
 }, false)
 
 window.addEventListener("deviceorientation", function(event) {
@@ -150,7 +140,7 @@ adjustWindowScroll = function(newPositionTop, maxPositionTop) {
 	var canScrollDown = (currentScrollY < maxScrollY)
 
 	var maxStep = 100
-	var step = 1
+	var step = 10
 
 	var str_intensity = ""
 	if (isAtTop && canScrollUp && up) {
