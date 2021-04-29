@@ -42,7 +42,7 @@ window.addEventListener("deviceorientation", async function(event) {
 	updateRocket(rocketElement);
 
 	let scrollDirection = getScrollDirection(rocketElement);
-	if (scrollDirection != 0) await updateScroll(scrollDirection);
+	if (scrollDirection != 0) callUpdate(scrollDirection);
 }, true);
 
 function calibrateDeviceOrientation(beta, gamma) {
@@ -150,6 +150,10 @@ function updateRocketPositionY(rocketElement, rocketBounding) {
 	else if (newPositionTop > maxPositionTop) newPositionTop = maxPositionTop;
 
 	rocketElement.style.top = newPositionTop + "px";
+}
+
+async function callUpdate(scrollDirection) {
+	await updateScroll(scrollDirection);
 }
 
 async function updateScroll(scrollDirection) {
