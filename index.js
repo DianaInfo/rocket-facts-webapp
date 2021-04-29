@@ -27,6 +27,7 @@ let rocketOffsetY = 30;
 let scrollOffsetY = 100;
 
 let up = true;
+var locked = false;
 
 window.addEventListener("load", function() {
 	window.scrollTo(0,0);
@@ -153,7 +154,13 @@ function updateRocketPositionY(rocketElement, rocketBounding) {
 }
 
 async function callUpdate(scrollDirection) {
-	await updateScroll(scrollDirection);
+	console.log(locked)
+	if(locked === false){
+		locked = true;
+		console.log(locked);
+		await updateScroll(scrollDirection);
+		locked = false;
+	}
 }
 
 async function updateScroll(scrollDirection) {
