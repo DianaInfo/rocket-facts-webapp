@@ -174,23 +174,11 @@ async function updateScroll(scrollDirection) {
 	if (nextScrollY < 0) nextScrollY = 0;
 	else if (nextScrollY > maxScrollY) nextScrollY = maxScrollY;
 
-	if (scrollDirection < 0) {
-		for (let i = window.pageYOffset; i > nextScrollY; i--) {
-			await sleep(1);
-			window.scrollTo({
-				top: i,
-				behavior: 'smooth'
-			});
-		}
-	} else {
-		for (let i = window.pageYOffset; i < nextScrollY; i++) {
-			await sleep(1);
-			window.scrollTo({
-				top: i,
-				behavior: 'smooth'
-			});
-		}
-	}
+	window.scrollTo({
+		top: nextScrollY,
+		behavior: 'smooth'
+	});
+	await sleep(1);
 }
 
 function sleep(ms) {
