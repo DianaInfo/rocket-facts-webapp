@@ -49,7 +49,6 @@ window.addEventListener("deviceorientation", async function(event) {
 function calibrateDeviceOrientation(beta, gamma) {
 	actualBeta = beta - betaStandard;
 	actualGamma = gamma - gammaStandard;
-	document.getElementById("info").innerHTML = "<br> actualBeta = " + actualBeta
 }
 
 function calibrate() {
@@ -181,11 +180,23 @@ async function updateScroll(scrollDirection) {
 	if (nextScrollY < 0) nextScrollY = 0;
 	else if (nextScrollY > maxScrollY) nextScrollY = maxScrollY;
 
-	window.scrollTo({
-		top: nextScrollY,
-		behavior: 'smooth'
-	});
-	await sleep(1);
+	if (scrollDirection < 0) {
+		for (let i = window.pageYOffset; i > nextScrollY; i--) {
+			await sleep(1);
+			window.scrollTo({
+				top: i,
+				behavior: 'smooth'
+			});
+		}
+	} else {
+		for (let i = window.pageYOffset; i < nextScrollY; i++) {
+			await sleep(1);
+			window.scrollTo({
+				top: i,
+				behavior: 'smooth'
+			});
+		}
+	}
 }
 
 function sleep(ms) {

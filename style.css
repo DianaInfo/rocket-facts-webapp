@@ -32,11 +32,6 @@
         color: black;
     }
 
-    #info {
-        position: fixed;
-        color: orangered;
-    }
-
     #title {
         vertical-align: top;
         text-align: right;
