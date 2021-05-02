@@ -22,10 +22,11 @@
         top: 2rem;
         right: 2rem;
         color: white;
+        font-size: 1rem;
         background-color: green;
         border: 2px solid white;
         border-radius: 1rem;
-        padding: 0.5rem;
+        padding: 0.7rem 3rem;
     }
 
     #calibrate_button:active {
