@@ -1,6 +1,7 @@
     body {
         background-color: white;
-        scroll-behavior: smooth
+        scroll-behavior: smooth;
+        margin: 0;
     }
 
     header {
